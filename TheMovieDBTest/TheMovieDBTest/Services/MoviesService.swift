@@ -10,13 +10,12 @@ import Foundation
 
 final class MoviesService {
     
-    
-    func fetchPopularMovies(complition: @escaping ([MovieModel]) -> Void) {
+    func fetchPopularMovies(page: Int, complition: @escaping ([MovieModel]?, String?) -> Void) {
         let url = URL(string: "https://api.themoviedb.org/3/movie/popular")!
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "language", value: "en-US"),
-            URLQueryItem(name: "page", value: "1"),
+            URLQueryItem(name: "page", value: "\(page)"),
         ]
         components.queryItems = components.queryItems.map { $0 + queryItems } ?? queryItems
         
@@ -31,28 +30,43 @@ final class MoviesService {
         URLSession.shared.dataTask(with: request) { data, responce, error in
             if let error = error {
                 print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
+                complition(nil, "DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
                 return
             }
             
             guard let _ = responce as? HTTPURLResponse else {
                 print("DEBUG: bad response")
+                complition(nil, "DEBUG: bad response")
                 return
             }
             
             guard let data = data else {
                 print("DEBUG: no data")
+                complition(nil, "DEBUG: no data")
                 return
             }
             
-            guard let results = try? JSONDecoder().decode(Response<MovieModel>.self, from: data) else {
+            do {
+                let results = try JSONDecoder().decode(Response<MovieModel>.self, from: data)
+                DispatchQueue.main.async {
+                    complition(results.results, nil)
+                }
+            } catch {
                 print("DEBUG: cannot decode JSON")
-                return
+                
+                print(error.localizedDescription)
+                complition(nil, "DEBUG: cannot decode JSON")
             }
-            
-            print(results.results)
-            DispatchQueue.main.async {
-                complition(results.results)
-            }
+//            guard let results = try? JSONDecoder().decode(Response<MovieModel>.self, from: data) else {
+//                let jsonObject = try? JSONSerialization.jsonObject(with: data)
+//                print(jsonObject)
+//                print("DEBUG: cannot decode JSON")
+//                return
+//            }
+//            
+//            DispatchQueue.main.async {
+//                complition(results.results)
+//            }
         }.resume()
     }
 }

@@ -11,7 +11,7 @@ class MoviesListViewModel {
     
     private let moviesService = MoviesService()
     
-    func fetchMoviesList(complition: @escaping ([MovieModel]) -> Void) {
-        moviesService.fetchPopularMovies(complition: complition)
+    func fetchMoviesList(page: Int, complition: @escaping ([MovieModel]?, String?) -> Void) {
+        moviesService.fetchPopularMovies(page: page, complition: complition)
     }
 }
