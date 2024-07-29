@@ -18,6 +18,7 @@
 		8479FCB82C56DA2600E36F3F /* MoviesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCB72C56DA2600E36F3F /* MoviesListViewModel.swift */; };
 		8479FCBA2C56DBA400E36F3F /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCB92C56DBA400E36F3F /* Genre.swift */; };
 		8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCBB2C56E0BC00E36F3F /* MoviesService.swift */; };
+		8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */ = {isa = PBXBuildFile; productRef = 8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +100,9 @@
 			dependencies = (
 			);
 			name = TheMovieDBTest;
+			packageProductDependencies = (
+				8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */,
+			);
 			productName = TheMovieDBTest;
 			productReference = 8479FC9C2C56A3AE00E36F3F /* TheMovieDBTest.app */;
 			productType = "com.apple.product-type.application";
@@ -126,6 +131,9 @@
 				Base,
 			);
 			mainGroup = 8479FC932C56A3AE00E36F3F;
+			packageReferences = (
+				8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */,
+			);
 			productRefGroup = 8479FC9D2C56A3AE00E36F3F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -393,6 +401,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pronebird/UIScrollView-InfiniteScroll";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */;
+			productName = UIScrollView_InfiniteScroll;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8479FC942C56A3AE00E36F3F /* Project object */;
 }
