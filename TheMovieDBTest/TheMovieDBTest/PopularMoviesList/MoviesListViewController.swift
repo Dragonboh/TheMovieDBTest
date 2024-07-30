@@ -82,6 +82,14 @@ class MoviesListViewController: UIViewController {
         }
     }
     
+    private func sortMovies(by sortOption: SortOption) {
+        print("DEBUG: new sort option: \(sortOption.title)")
+        moviesListVM.currentSortOption = sortOption
+        fetchInitialData(pullToRefresh: false)
+//        moviesListVM.sortMovies(by: sortOption)
+        tableview.reloadData()
+    }
+    
     @objc
     private func pullToRefresh() {
         fetchInitialData(pullToRefresh: true)
@@ -91,6 +99,45 @@ class MoviesListViewController: UIViewController {
         let alertVC = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true)
+    }
+    
+    @IBAction func showSortOptionsActionSheet(_ sender: Any) {
+        let actionSheet = UIAlertController(title: "Select an Option", message: nil, preferredStyle: .actionSheet)
+        
+        // Add actions to the action sheet
+        let popularityOption = UIAlertAction(title: SortOption.popularity.title, style: .default) { [weak self] _ in
+            self?.sortMovies(by: .popularity)
+        }
+        popularityOption.setValue(false, forKey: "checked")
+        
+        let ratingOption = UIAlertAction(title: SortOption.rating.title, style: .default) { [weak self] _ in
+            self?.sortMovies(by: .rating)
+        }
+        ratingOption.setValue(false, forKey: "checked")
+        
+        let titleOption = UIAlertAction(title: SortOption.title.title, style: .default) { [weak self] _ in
+            self?.sortMovies(by: .title)
+        }
+        titleOption.setValue(false, forKey: "checked")
+        
+        switch moviesListVM.currentSortOption {
+        case .popularity:
+            popularityOption.setValue(true, forKey: "checked")
+        case .title:
+            titleOption.setValue(true, forKey: "checked")
+        case .rating:
+            ratingOption.setValue(true, forKey: "checked")
+        }
+        
+        let cancelAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        
+        actionSheet.addAction(popularityOption)
+        actionSheet.addAction(ratingOption)
+        actionSheet.addAction(titleOption)
+        actionSheet.addAction(cancelAction)
+        
+        // Present the action sheet
+        present(actionSheet, animated: true, completion: nil)
     }
 }
 
@@ -106,7 +153,7 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         cell.imageName = movie.backdropPath
         cell.titleAndYearLabel.text = "\(movie.title), \(movie.releaseDate)"
-        cell.genresLabel.text = movie.genres.reduce("", { partialResult, genre in
+        cell.genresLabel.text = movie.genres?.reduce("", { partialResult, genre in
             return partialResult.appending(", \(genre)")
         })
         cell.ratingLabel.text = "\(movie.rating)"

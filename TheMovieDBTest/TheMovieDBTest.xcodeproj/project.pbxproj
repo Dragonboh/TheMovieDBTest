@@ -20,6 +20,7 @@
 		8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCBB2C56E0BC00E36F3F /* MoviesService.swift */; };
 		8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */ = {isa = PBXBuildFile; productRef = 8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */; };
 		8479FCC62C580C2D00E36F3F /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCC52C580C2D00E36F3F /* Router.swift */; };
+		8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCC72C5921CB00E36F3F /* SortOption.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		8479FCB92C56DBA400E36F3F /* Genre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
 		8479FCBB2C56E0BC00E36F3F /* MoviesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesService.swift; sourceTree = "<group>"; };
 		8479FCC52C580C2D00E36F3F /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		8479FCC72C5921CB00E36F3F /* SortOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortOption.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			children = (
 				8479FCB92C56DBA400E36F3F /* Genre.swift */,
 				8479FCB32C56A7FD00E36F3F /* MovieModel.swift */,
+				8479FCC72C5921CB00E36F3F /* SortOption.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 			files = (
 				8479FCB42C56A7FD00E36F3F /* MovieModel.swift in Sources */,
 				8479FCA42C56A3AE00E36F3F /* MoviesListViewController.swift in Sources */,
+				8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */,
 				8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */,
 				8479FCA02C56A3AE00E36F3F /* AppDelegate.swift in Sources */,
 				8479FCC62C580C2D00E36F3F /* Router.swift in Sources */,

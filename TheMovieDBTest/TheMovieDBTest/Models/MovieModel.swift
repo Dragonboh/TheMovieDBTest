@@ -13,14 +13,15 @@ struct Response<RR: Codable>: Codable {
 
 struct MovieModel: Codable {
     let id: Int
-    let backdropPath: String
-    let title: String
-    let releaseDate: String
-    let rating: Double
-    let genres: [Int]
+    let backdropPath: String?
+    let title: String?
+    let releaseDate: String?
+    let rating: Double?
+    let genres: [Int]?
+    let popularity: Double?
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, popularity
         case backdropPath = "backdrop_path"
         case title = "original_title"
         case releaseDate = "release_date"

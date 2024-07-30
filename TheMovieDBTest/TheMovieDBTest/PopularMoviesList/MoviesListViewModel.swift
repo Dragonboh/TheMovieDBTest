@@ -14,6 +14,7 @@ class MoviesListViewModel {
     
     private var totalPagesDownloaded = 0
     
+    var currentSortOption: SortOption = .popularity
     var movies: [MovieModel] = []
     
     init(moviesService: MoviesService, router: Router) {
@@ -52,7 +53,7 @@ class MoviesListViewModel {
     }
     
     private func fetchData(page: Int, complition: @escaping ([MovieModel]?, String?) -> Void) {
-        moviesService.fetchPopularMovies(page: page) { [weak self] data, errorMessage in
+        moviesService.fetchPopularMovies(page: page, sortBy: currentSortOption) { [weak self] data, errorMessage in
             guard let self = self else { return }
             
             if let errorMessage = errorMessage {
