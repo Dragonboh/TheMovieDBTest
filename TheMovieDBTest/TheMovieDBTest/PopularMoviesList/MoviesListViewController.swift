@@ -86,7 +86,6 @@ class MoviesListViewController: UIViewController {
         print("DEBUG: new sort option: \(sortOption.title)")
         moviesListVM.currentSortOption = sortOption
         fetchInitialData(pullToRefresh: false)
-//        moviesListVM.sortMovies(by: sortOption)
         tableview.reloadData()
     }
     

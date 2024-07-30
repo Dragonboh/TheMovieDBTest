@@ -30,7 +30,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qmE-0a-Pe1">
-                                                    <rect key="frame" x="1.6666666666666572" y="10" width="390" height="220"/>
+                                                    <rect key="frame" x="0.0" y="10" width="393" height="220"/>
                                                     <color key="backgroundColor" name="AccentColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="220" id="wMi-5z-ukr"/>
@@ -57,9 +57,9 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="4i8-E2-Wcg" firstAttribute="leading" secondItem="LtA-0P-677" secondAttribute="leadingMargin" id="4Gu-6C-IIz"/>
-                                                <constraint firstItem="qmE-0a-Pe1" firstAttribute="leading" secondItem="LtA-0P-677" secondAttribute="leading" constant="1.6699999999999999" id="Ebq-tc-Fge"/>
+                                                <constraint firstItem="qmE-0a-Pe1" firstAttribute="leading" secondItem="LtA-0P-677" secondAttribute="leading" id="Ebq-tc-Fge"/>
                                                 <constraint firstItem="4i8-E2-Wcg" firstAttribute="bottom" secondItem="LtA-0P-677" secondAttribute="bottomMargin" id="Gv9-xe-LgH"/>
-                                                <constraint firstAttribute="trailing" secondItem="qmE-0a-Pe1" secondAttribute="trailing" constant="1.3300000000000001" id="NbV-Pg-IEx"/>
+                                                <constraint firstAttribute="trailing" secondItem="qmE-0a-Pe1" secondAttribute="trailing" id="NbV-Pg-IEx"/>
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="qmE-0a-Pe1" secondAttribute="bottom" constant="10" id="T2q-h6-FkO"/>
                                                 <constraint firstItem="QIm-Sl-SyY" firstAttribute="bottom" secondItem="LtA-0P-677" secondAttribute="bottomMargin" id="aae-6L-zm4"/>
                                                 <constraint firstItem="QIm-Sl-SyY" firstAttribute="leading" secondItem="4i8-E2-Wcg" secondAttribute="trailing" constant="20" id="eFn-ez-Z92"/>
@@ -114,8 +114,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="eh9-CE-RcF" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="c8y-yL-BIW">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="c8y-yL-BIW">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
