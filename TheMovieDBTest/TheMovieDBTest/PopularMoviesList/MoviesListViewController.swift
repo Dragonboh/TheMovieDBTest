@@ -9,47 +9,100 @@ import UIKit
 import UIScrollView_InfiniteScroll
 
 class MoviesListViewController: UIViewController {
-    
-    @IBOutlet weak var titleAndYear: UILabel!
-    @IBOutlet weak var genres: UILabel!
-    @IBOutlet weak var rating: UILabel!
+
     @IBOutlet weak var tableview: UITableView!
     
-    private let moviesListVM = MoviesListViewModel()
+    lazy var tableRefreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        
+        return refreshControl
+    }()
     
-    private var movies: [MovieModel] = []
+    var moviesListVM: MoviesListViewModel!
+    
+    private var lastScrollOffset = 0.0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        fetchData()
+        setUpNavigationBar()
+        
+        tableview.estimatedRowHeight = 240
+        tableview.rowHeight = UITableView.automaticDimension
+        tableview.refreshControl = tableRefreshControl
+        fetchInitialData(pullToRefresh: false)
     }
-    private var pagesDownloaded = 1
     
-    private func fetchData() {
-        moviesListVM.fetchMoviesList(page: pagesDownloaded) { [weak self] moviesList, errorMessage in
-            if let _ = errorMessage {
+    private func setUpNavigationBar() {
+        self.navigationItem.title = "Popular Movies"
+    }
+    
+    private func fetchInitialData(pullToRefresh: Bool) {
+        moviesListVM.fetchInitialData { [weak self] errorMessage in
+            DispatchQueue.main.async {
+                if let errorMessage = errorMessage {
+                    print(errorMessage)
+                    self?.showAlertError(message: errorMessage)
+                } else {
+                    self?.tableview.reloadData()
+                }
+                
+                let delay = DispatchTime.now() + .microseconds(500)
+                DispatchQueue.main.asyncAfter(deadline: delay) {
+                    self?.tableRefreshControl.endRefreshing()
+                }
+            }
+        }
+    }
+    
+    private func fetchMoreData(endDragging: Bool) {
+        print("DEBUG: Fetch more data")
+        tableview.beginInfiniteScroll(false)
+        
+        moviesListVM.fetchMoreData { [weak self] indices, errorMessage in
+            if let errorMessage = errorMessage {
+                DispatchQueue.main.async {
+                    if endDragging {
+                        self?.showAlertError(message: errorMessage)
+                    }
+                    self?.tableview.finishInfiniteScroll()
+                }
+                
                 return
             }
             
-            guard let moviesList = moviesList else { return }
-            DispatchQueue.main.async {
-                self?.movies = moviesList
-                self?.tableview.reloadData()
+            guard let indices = indices else { return }
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.tableview.insertRows(at: indices, with: .automatic)
+                self?.tableview.finishInfiniteScroll()
             }
         }
+    }
+    
+    @objc
+    private func pullToRefresh() {
+        fetchInitialData(pullToRefresh: true)
+    }
+    
+    private func showAlertError(message: String) {
+        let alertVC = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alertVC, animated: true)
     }
 }
 
 extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movies.count
+        moviesListVM.movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MoviewCell", for: indexPath) as! MoviewCell
         
-        let movie = movies[indexPath.row]
+        let movie = moviesListVM.movies[indexPath.row]
         
         cell.imageName = movie.backdropPath
         cell.titleAndYearLabel.text = "\(movie.title), \(movie.releaseDate)"
@@ -64,40 +117,28 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension MoviesListViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    private func offset(_ scrollView: UIScrollView) -> Double {
         let offset = scrollView.contentOffset.y
-        let contentHeight = Double(movies.count * 240)
+        let contentHeight = Double(moviesListVM.movies.count * 240)
         let onScreen = scrollView.frame.size.height
+        let counter = contentHeight - offset - onScreen
         
-        if (contentHeight - offset - onScreen) < 2400  && (!tableview.isAnimatingInfiniteScroll) {
-            print("DEBUG: Fetch more dara")
-            tableview.beginInfiniteScroll(false)
-            
-            moviesListVM.fetchMoviesList(page: pagesDownloaded + 1) { [weak self] moviesList, errorMessage in
-                guard let self = self else { return }
-                
-                if let errorMessage = errorMessage {
-                    print(errorMessage)
-                    DispatchQueue.main.async {
-                        self.tableview.finishInfiniteScroll()
-                    }
-                    
-                    return
-                }
-                
-                guard let moviesList = moviesList else { return }
-                pagesDownloaded += 1
-                DispatchQueue.main.async {
-                    let startIndex = self.movies.count
-                    let endIndex = self.movies.count + moviesList.count
-                    let indices = Array(startIndex..<endIndex).compactMap {
-                        IndexPath(row: $0, section: 0)
-                    }
-                    self.movies.append(contentsOf: moviesList)
-                    self.tableview.insertRows(at: indices, with: .automatic)
-                    self.tableview.finishInfiniteScroll()
-                }
-            }
+        return counter
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let counter = offset(scrollView)
+        if (counter < lastScrollOffset) && (counter < 2400) && (counter > -11) && (!tableview.isAnimatingInfiniteScroll) {
+            fetchMoreData(endDragging: false)
+        }
+        lastScrollOffset = counter
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        print("scrollViewDidEndDragging")
+        let counter = offset(scrollView)
+        if counter < -11.0 {
+            fetchMoreData(endDragging: true)
         }
     }
 }

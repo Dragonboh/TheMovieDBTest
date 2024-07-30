@@ -22,10 +22,10 @@ class MoviewCell: UITableViewCell {
     
 //    var downloadImageTasks = [String: URLSessionDataTask]()
     
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//    }
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.contentView.autoresizingMask = .flexibleHeight
+    }
 //
 //    override func setSelected(_ selected: Bool, animated: Bool) {
 //        super.setSelected(selected, animated: animated)
