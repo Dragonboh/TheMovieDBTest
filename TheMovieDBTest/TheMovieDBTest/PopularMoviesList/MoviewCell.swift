@@ -41,42 +41,42 @@ class MoviewCell: UITableViewCell {
     
 
     private func loadImage() {
-//        guard let urlImageName = imageName else { return }
-//        
-//        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(urlImageName)")!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        
-//        let imageTask = URLSession.shared.dataTask(with: request) { [weak self] data, responce, error in
-//            if let error = error {
-//                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            guard let _ = responce as? HTTPURLResponse else {
-//                print("DEBUG: bad response")
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                print("DEBUG: no data")
-//                return
-//            }
-//            
-//            guard let image = UIImage(data: data) else {
-//                print("DEBUG: cannot decode image")
-//                return
-//            }
-//            
-//            if urlImageName == self?.imageName {
-//                DispatchQueue.main.async { [weak self] in
-//                    self?.movieImageView.image = image
-//                }
-//            }
-//        }
-//        
-////        downloadImageTasks[imageName] = imageTask
-//        imageTask.resume()
+        guard let urlImageName = imageName else { return }
+        
+        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(urlImageName)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let imageTask = URLSession.shared.dataTask(with: request) { [weak self] data, responce, error in
+            if let error = error {
+                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let _ = responce as? HTTPURLResponse else {
+                print("DEBUG: bad response")
+                return
+            }
+            
+            guard let data = data else {
+                print("DEBUG: no data")
+                return
+            }
+            
+            guard let image = UIImage(data: data) else {
+                print("DEBUG: cannot decode image")
+                return
+            }
+            
+            if urlImageName == self?.imageName {
+                DispatchQueue.main.async { [weak self] in
+                    self?.movieImageView.image = image
+                }
+            }
+        }
+        
+//        downloadImageTasks[imageName] = imageTask
+        imageTask.resume()
     }
 
 }
