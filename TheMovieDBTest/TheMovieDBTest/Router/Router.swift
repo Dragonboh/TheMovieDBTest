@@ -19,6 +19,7 @@ class Router {
         }
         let viewModel = MoviesListViewModel(moviesService: MoviesService(), router: self)
         popularMoviesVC.moviesListVM = viewModel
+        viewModel.screen = popularMoviesVC
         let nav = UINavigationController(rootViewController: popularMoviesVC)
         navigationVC = nav
         

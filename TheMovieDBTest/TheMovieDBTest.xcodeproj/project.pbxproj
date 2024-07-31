@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
+		843F81B12C5A45D8009BAF89 /* MovieParametersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81B02C5A45D8009BAF89 /* MovieParametersCell.swift */; };
+		843F81B32C5A4681009BAF89 /* MoviePosterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81B22C5A4681009BAF89 /* MoviePosterCell.swift */; };
+		843F81B52C5A46DC009BAF89 /* MovieDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81B42C5A46DC009BAF89 /* MovieDescriptionCell.swift */; };
+		843F81B72C5A47C7009BAF89 /* MovieDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81B62C5A47C7009BAF89 /* MovieDetailsViewModel.swift */; };
+		843F81BA2C5A520C009BAF89 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 843F81B92C5A520C009BAF89 /* JGProgressHUD */; };
 		8479FCA02C56A3AE00E36F3F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FC9F2C56A3AE00E36F3F /* AppDelegate.swift */; };
 		8479FCA22C56A3AE00E36F3F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCA12C56A3AE00E36F3F /* SceneDelegate.swift */; };
 		8479FCA42C56A3AE00E36F3F /* MoviesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479FCA32C56A3AE00E36F3F /* MoviesListViewController.swift */; };
@@ -24,6 +30,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
+		843F81B02C5A45D8009BAF89 /* MovieParametersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieParametersCell.swift; sourceTree = "<group>"; };
+		843F81B22C5A4681009BAF89 /* MoviePosterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePosterCell.swift; sourceTree = "<group>"; };
+		843F81B42C5A46DC009BAF89 /* MovieDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDescriptionCell.swift; sourceTree = "<group>"; };
+		843F81B62C5A47C7009BAF89 /* MovieDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewModel.swift; sourceTree = "<group>"; };
 		8479FC9C2C56A3AE00E36F3F /* TheMovieDBTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheMovieDBTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8479FC9F2C56A3AE00E36F3F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8479FCA12C56A3AE00E36F3F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -46,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843F81BA2C5A520C009BAF89 /* JGProgressHUD in Frameworks */,
 				8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,6 +65,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		843F81AC2C5A3DEA009BAF89 /* MovieDetails */ = {
+			isa = PBXGroup;
+			children = (
+				843F81AF2C5A45B1009BAF89 /* Cells */,
+				843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */,
+				843F81B62C5A47C7009BAF89 /* MovieDetailsViewModel.swift */,
+			);
+			path = MovieDetails;
+			sourceTree = "<group>";
+		};
+		843F81AF2C5A45B1009BAF89 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				843F81B02C5A45D8009BAF89 /* MovieParametersCell.swift */,
+				843F81B22C5A4681009BAF89 /* MoviePosterCell.swift */,
+				843F81B42C5A46DC009BAF89 /* MovieDescriptionCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		8479FC932C56A3AE00E36F3F = {
 			isa = PBXGroup;
 			children = (
@@ -72,6 +104,7 @@
 		8479FC9E2C56A3AE00E36F3F /* TheMovieDBTest */ = {
 			isa = PBXGroup;
 			children = (
+				843F81AC2C5A3DEA009BAF89 /* MovieDetails */,
 				8479FCC42C580C1500E36F3F /* Router */,
 				8479FCC22C57E06E00E36F3F /* App */,
 				8479FCA82C56A3B000E36F3F /* Assets.xcassets */,
@@ -148,6 +181,7 @@
 			name = TheMovieDBTest;
 			packageProductDependencies = (
 				8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */,
+				843F81B92C5A520C009BAF89 /* JGProgressHUD */,
 			);
 			productName = TheMovieDBTest;
 			productReference = 8479FC9C2C56A3AE00E36F3F /* TheMovieDBTest.app */;
@@ -179,6 +213,7 @@
 			mainGroup = 8479FC932C56A3AE00E36F3F;
 			packageReferences = (
 				8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */,
+				843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 			);
 			productRefGroup = 8479FC9D2C56A3AE00E36F3F /* Products */;
 			projectDirPath = "";
@@ -212,11 +247,16 @@
 				8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */,
 				8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */,
 				8479FCA02C56A3AE00E36F3F /* AppDelegate.swift in Sources */,
+				843F81B72C5A47C7009BAF89 /* MovieDetailsViewModel.swift in Sources */,
+				843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */,
 				8479FCC62C580C2D00E36F3F /* Router.swift in Sources */,
 				8479FCB82C56DA2600E36F3F /* MoviesListViewModel.swift in Sources */,
+				843F81B12C5A45D8009BAF89 /* MovieParametersCell.swift in Sources */,
 				8479FCB62C56A99300E36F3F /* MoviewCell.swift in Sources */,
 				8479FCA22C56A3AE00E36F3F /* SceneDelegate.swift in Sources */,
 				8479FCBA2C56DBA400E36F3F /* Genre.swift in Sources */,
+				843F81B32C5A4681009BAF89 /* MoviePosterCell.swift in Sources */,
+				843F81B52C5A46DC009BAF89 /* MovieDescriptionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,6 +491,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
 		8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pronebird/UIScrollView-InfiniteScroll";
@@ -462,6 +510,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		843F81B92C5A520C009BAF89 /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
+		};
 		8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */;

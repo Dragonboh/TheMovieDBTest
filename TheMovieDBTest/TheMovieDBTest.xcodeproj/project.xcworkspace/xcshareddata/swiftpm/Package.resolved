@@ -1,6 +1,15 @@
 {
-  "originHash" : "6655f87ff6f582cf34d5ff151f89dc2aacbeac594f19bb1db60ee71cc7bc048b",
+  "originHash" : "e26c657043ad323331cea41d0186945beb66c5ec2122e4ac333824bf95280bb2",
   "pins" : [
+    {
+      "identity" : "jgprogresshud",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JonasGessner/JGProgressHUD",
+      "state" : {
+        "revision" : "78d7cd35f1d90ff74fd82e486f2cbe4b24be8cf9",
+        "version" : "2.2.0"
+      }
+    },
     {
       "identity" : "uiscrollview-infinitescroll",
       "kind" : "remoteSourceControl",

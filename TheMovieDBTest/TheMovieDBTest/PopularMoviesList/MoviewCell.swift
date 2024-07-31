@@ -20,26 +20,15 @@ class MoviewCell: UITableViewCell {
         }
     }
     
-//    var downloadImageTasks = [String: URLSessionDataTask]()
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         self.contentView.autoresizingMask = .flexibleHeight
     }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state`
-//    }
     
     override func prepareForReuse() {
         movieImageView.image = nil
-//        guard let imageName = imageName, let downloadTask = downloadImageTasks[imageName] else { return }
-//        downloadTask.cancel()
     }
     
-
     private func loadImage() {
         guard let urlImageName = imageName else { return }
         
@@ -74,9 +63,6 @@ class MoviewCell: UITableViewCell {
                 }
             }
         }
-        
-//        downloadImageTasks[imageName] = imageTask
         imageTask.resume()
     }
-
 }
