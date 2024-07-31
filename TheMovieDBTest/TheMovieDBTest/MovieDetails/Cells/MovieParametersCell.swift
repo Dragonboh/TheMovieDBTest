@@ -24,5 +24,24 @@ class MovieParametersCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    func configure(title: String?, country: [String]?, year: String?, genres: [String]?, rating: Double?) {
+        moviewTitleLabel.text = title
+        
+        var coutryYearString = ""
+        
+        if let country = country {
+            coutryYearString = country.joined(separator: ", ")
+        }
+        coutryYearString.append(" ")
+        coutryYearString.append(year ?? "")
+        countryYearLabel.text = coutryYearString
+        
+        if let genres = genres {
+            genresLabel.text = genres.joined(separator: ", ")
+        }
+        
+        ratingLabel.text = "\(rating ?? 0.0)"
+    }
 
 }

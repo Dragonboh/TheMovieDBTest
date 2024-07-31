@@ -14,6 +14,8 @@ class MoviePosterCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+//        self.contentView.autoresizingMask = .flexibleHeightr
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

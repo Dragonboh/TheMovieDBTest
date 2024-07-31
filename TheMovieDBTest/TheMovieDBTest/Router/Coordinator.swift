@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Router {
+class Coordinator {
     
     weak var navigationVC: UINavigationController?
     
@@ -18,11 +18,28 @@ class Router {
             return nil
         }
         let viewModel = MoviesListViewModel(moviesService: MoviesService(), router: self)
+        viewModel.goToMovieDetailsScreen = {[weak self] movieId in
+            self?.goToMovieDetailsScreen(movieId: movieId)
+        }
+        
         popularMoviesVC.moviesListVM = viewModel
         viewModel.screen = popularMoviesVC
+        
         let nav = UINavigationController(rootViewController: popularMoviesVC)
         navigationVC = nav
         
         return nav
+    }
+    
+    private func goToMovieDetailsScreen(movieId: Int) {
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MoviewDetailsViewController")
+        guard let movieDetailsVC = viewController as? MoviewDetailsViewController else {
+            assertionFailure("MoviewDetailsViewController is bad configured in Main storyboard")
+            return
+        }
+        let viewModel = MovieDetailsViewModel(screen: movieDetailsVC, moviesService: MoviesService(), movieId: movieId)
+        movieDetailsVC.movieDetailsVM = viewModel
+        
+        navigationVC?.pushViewController(movieDetailsVC, animated: true)
     }
 }

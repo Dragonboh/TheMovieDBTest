@@ -7,6 +7,7 @@
 
 import UIKit
 import UIScrollView_InfiniteScroll
+import JGProgressHUD
 
 enum MovieListState {
     case initialDataLoadingStart
@@ -24,7 +25,12 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
 
     @IBOutlet weak var tableview: UITableView!
     
-    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    lazy var progressHUD: JGProgressHUD = {
+        let hud = JGProgressHUD()
+        hud.textLabel.text = "Loading"
+        hud.detailTextLabel.text = "Please wait"
+        return hud
+    }()
     
     lazy var tableRefreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -49,30 +55,28 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         tableview.refreshControl = tableRefreshControl
         tableview.isHidden = true
         
-        activityIndicatorView.hidesWhenStopped = true
-        
         fetchInitialData()
     }
     
     private func setUpNavigationBar() {
-        self.navigationItem.title = "Popular Movies"
+        navigationItem.title = "Popular Movies"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     func updateState(state: MovieListState) {
         switch state {
         case .initialDataLoadingStart:
             if !isPullToRefreshRunning {
-                activityIndicatorView.isHidden = false
-                activityIndicatorView.startAnimating()
+                progressHUD.show(in: view)
             }
         case .initialDataLoadingFinished:
-            tableview.isHidden = false
-            tableview.reloadData()
             if isPullToRefreshRunning {
                 finishPullToRefreshAnimation()
             } else {
-                activityIndicatorView.stopAnimating()
+                progressHUD.dismiss()
             }
+            tableview.isHidden = false
+            tableview.reloadData()
         case .moreDataLoadingStart:
             tableview.beginInfiniteScroll(false)
         case .moreDataLoadedFinished(let indices):
@@ -91,10 +95,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
                 break
             }
             
-            if activityIndicatorView.isAnimating {
-                activityIndicatorView.stopAnimating()
-            }
-            
+            progressHUD.dismiss()
             showAlertError(message: errorMessage)
         }
     }
@@ -109,52 +110,14 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
     
     private func fetchInitialData() {
         print("DEBUG: Fetch initial data")
-        moviesListVM.fetchInitialData2()
-        
-//        moviesListVM.fetchInitialData { [weak self] errorMessage in
-//            DispatchQueue.main.async {
-//                if let errorMessage = errorMessage {
-//                    print(errorMessage)
-//                    self?.showAlertError(message: errorMessage)
-//                } else {
-//                    self?.tableview.reloadData()
-//                }
-//                
-//                let delay = DispatchTime.now() + .microseconds(500)
-//                DispatchQueue.main.asyncAfter(deadline: delay) {
-//                    self?.tableRefreshControl.endRefreshing()
-//                }
-//            }
-//        }
+        moviesListVM.fetchInitialData()
     }
     
     private func fetchMoreData(endDragging: Bool) {
         print("DEBUG: Fetch more data")
         tableViewDragToEnd = endDragging
-        moviesListVM.fetchMoreData2()
-        
-        
+        moviesListVM.fetchMoreData()
         tableview.beginInfiniteScroll(false)
-        
-//        moviesListVM.fetchMoreData { [weak self] indices, errorMessage in
-//            if let errorMessage = errorMessage {
-//                DispatchQueue.main.async {
-//                    if endDragging {
-//                        self?.showAlertError(message: errorMessage)
-//                    }
-//                    self?.tableview.finishInfiniteScroll()
-//                }
-//                
-//                return
-//            }
-//            
-//            guard let indices = indices else { return }
-//            
-//            DispatchQueue.main.async { [weak self] in
-//                self?.tableview.insertRows(at: indices, with: .automatic)
-//                self?.tableview.finishInfiniteScroll()
-//            }
-//        }
     }
     
     private func sortMovies(by sortOption: SortOption) {
@@ -246,6 +209,10 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         return cell
         
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        moviesListVM.didSelectRowAt(indexPath)
     }
 }
 

@@ -11,11 +11,7 @@ protocol SortByQuery {
     var queryValue: String { get }
 }
 
-
-
 final class MoviesService {
-    
-    
     
     func fetchPopularMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping ([MovieModel]?, String?) -> Void) {
         let url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
@@ -58,9 +54,7 @@ final class MoviesService {
             
             do {
                 let results = try JSONDecoder().decode(Response<MovieModel>.self, from: data)
-                DispatchQueue.main.async {
-                    complition(results.results, nil)
-                }
+                complition(results.results, nil)
             } catch {
                 print("DEBUG: cannot decode JSON")
                 
@@ -79,92 +73,54 @@ final class MoviesService {
 //            }
         }.resume()
     }
-}
+    
+    func fetchMovieDetailsAppendVideos(movieId: Int, complition: @escaping (Result<MovieDetails, CustomError>) -> Void) {
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieId)")!
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+        let queryItems: [URLQueryItem] = [
+          URLQueryItem(name: "append_to_response", value: "videos"),
+          URLQueryItem(name: "language", value: "en-US"),
+        ]
+        components.queryItems = components.queryItems.map { $0 + queryItems } ?? queryItems
 
-final class ImageService {
-
-    func loadImage(path: String) {
-        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(path)")!
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        
-        let imageTask = URLSession.shared.dataTask(with: request) { [weak self] data, responce, error in
+        request.timeoutInterval = 10
+        request.allHTTPHeaderFields = [
+          "accept": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
+        ]
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
+                complition(.failure(.error(error.localizedDescription)))
                 return
             }
             
-            guard let _ = responce as? HTTPURLResponse else {
+            guard let _ = response as? HTTPURLResponse else {
                 print("DEBUG: bad response")
+                complition(.failure(.error("bad response")))
                 return
             }
             
             guard let data = data else {
                 print("DEBUG: no data")
+                complition(.failure(.error("no response data")))
                 return
             }
             
-//            guard let image = UIImage(data: data) else {
-//                print("DEBUG: cannot decode image")
-//                return
-//            }
-            
-//            if urlImageName == self?.imageName {
-//                DispatchQueue.main.async { [weak self] in
-//                    self?.movieImageView.image = image
-//                }
-//            }
-        }
-        
-//        downloadImageTasks[imageName] = imageTask
-        imageTask.resume()
+            do {
+//                guard let json = try? JSONSerialization.jsonObject(with: data) else { return   }
+//                print(json)
+                let results = try JSONDecoder().decode(MovieDetails.self, from: data)
+                
+                complition(.success(results))
+            } catch {
+                print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
+                complition(.failure(.error(error.localizedDescription)))
+            }
+        }.resume()
     }
 }
 
-//protocol ImageLoader: AnyObject {
-//    func displayImageAtPath(_ path: String)
-//    
-//    var displayImageView: UIImageView { get set }
-//}
-//
-//import UIKit
-//
-//extension ImageLoader {
-//    func displayImageAtPath(path: String) {
-//        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(path)")!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        
-//        let imageTask = URLSession.shared.dataTask(with: request) { [weak self] data, responce, error in
-//            if let error = error {
-//                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            guard let _ = responce as? HTTPURLResponse else {
-//                print("DEBUG: bad response")
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                print("DEBUG: no data")
-//                return
-//            }
-//            
-//            guard let image = UIImage(data: data) else {
-//                print("DEBUG: cannot decode image")
-//                return
-//            }
-//            
-//            if urlImageName == self?.imageName {
-//                DispatchQueue.main.async { [weak self] in
-//                    displayImageView.image = image
-//                    
-//                }
-//            }
-//        }
-//        
-////        downloadImageTasks[imageName] = imageTask
-//        imageTask.resume()
-//    }
-//}

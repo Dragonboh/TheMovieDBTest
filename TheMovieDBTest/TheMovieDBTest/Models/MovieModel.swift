@@ -17,7 +17,7 @@ struct MovieModel: Codable {
     let title: String?
     let releaseDate: String?
     let rating: Double?
-    let genres: [Int]?
+    let genres: [Genre]?
     let popularity: Double?
     
     enum CodingKeys: String, CodingKey {
