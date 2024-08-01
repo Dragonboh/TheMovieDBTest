@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -174,36 +175,44 @@
                                                         </label>
                                                     </subviews>
                                                 </stackView>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play.square.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="afq-9a-6sX">
-                                                    <rect key="frame" x="20" y="101.66666666666666" width="50" height="47"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="50" id="eZr-oQ-YZy"/>
-                                                        <constraint firstAttribute="width" constant="50" id="sot-tM-IQa"/>
-                                                    </constraints>
-                                                </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rating 7.5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WBH-Ly-yt9">
                                                     <rect key="frame" x="298.33333333333331" y="115" width="74.666666666666686" height="20.333333333333343"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hm-Xx-QQA">
+                                                    <rect key="frame" x="20" y="100" width="50" height="50"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="50" id="upv-bD-Xdl"/>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="veG-EM-gOC"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="filled" imagePadding="0.0">
+                                                        <imageReference key="image" image="play.square.fill" catalog="system" symbolScale="large"/>
+                                                    </buttonConfiguration>
+                                                    <connections>
+                                                        <action selector="playTrailer:" destination="Gah-dK-EXa" eventType="touchUpInside" id="gvY-Sd-xcd"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="IMs-EM-YyI" firstAttribute="leading" secondItem="sdI-dz-tGK" secondAttribute="leadingMargin" id="0CV-Ua-o7S"/>
                                                 <constraint firstAttribute="trailing" secondItem="WBH-Ly-yt9" secondAttribute="trailing" constant="20" symbolic="YES" id="1aY-rE-fwD"/>
-                                                <constraint firstItem="afq-9a-6sX" firstAttribute="leading" secondItem="sdI-dz-tGK" secondAttribute="leading" constant="20" symbolic="YES" id="AA7-QD-2Y0"/>
                                                 <constraint firstItem="IMs-EM-YyI" firstAttribute="top" secondItem="sdI-dz-tGK" secondAttribute="topMargin" id="Ai8-ig-9vz"/>
-                                                <constraint firstAttribute="bottom" secondItem="afq-9a-6sX" secondAttribute="bottom" constant="10" id="UCd-3H-SaR"/>
-                                                <constraint firstItem="WBH-Ly-yt9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="afq-9a-6sX" secondAttribute="trailing" constant="100" id="ccR-Qj-dE0"/>
-                                                <constraint firstItem="WBH-Ly-yt9" firstAttribute="centerY" secondItem="afq-9a-6sX" secondAttribute="centerY" id="ka6-9Z-CNt"/>
-                                                <constraint firstItem="afq-9a-6sX" firstAttribute="top" secondItem="IMs-EM-YyI" secondAttribute="bottom" constant="10" id="lqG-cx-8Ze"/>
+                                                <constraint firstItem="1hm-Xx-QQA" firstAttribute="leading" secondItem="sdI-dz-tGK" secondAttribute="leading" constant="20" symbolic="YES" id="Sv2-N5-2wv"/>
+                                                <constraint firstItem="WBH-Ly-yt9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1hm-Xx-QQA" secondAttribute="trailing" constant="100" id="Uf8-F7-1Z5"/>
+                                                <constraint firstItem="WBH-Ly-yt9" firstAttribute="centerY" secondItem="1hm-Xx-QQA" secondAttribute="centerY" id="WuT-Ei-chy"/>
+                                                <constraint firstItem="1hm-Xx-QQA" firstAttribute="top" secondItem="IMs-EM-YyI" secondAttribute="bottom" constant="10" id="ljD-7H-f3S"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="IMs-EM-YyI" secondAttribute="trailing" id="pfV-lx-uLU"/>
+                                                <constraint firstAttribute="bottom" secondItem="1hm-Xx-QQA" secondAttribute="bottom" constant="10" id="sR9-vx-QfY"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="countryYearLabel" destination="nek-zd-JsV" id="0NI-mZ-thZ"/>
                                             <outlet property="genresLabel" destination="eRH-jc-gjk" id="oJc-yE-oga"/>
                                             <outlet property="moviewTitleLabel" destination="xGG-7R-8H3" id="P3c-tZ-5WH"/>
+                                            <outlet property="playTrailerButton" destination="1hm-Xx-QQA" id="2ZW-U5-HlH"/>
                                             <outlet property="ratingLabel" destination="WBH-Ly-yt9" id="Rl4-ae-tb8"/>
                                         </connections>
                                     </tableViewCell>
@@ -233,6 +242,7 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <sections/>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Hax-zZ-1Al"/>

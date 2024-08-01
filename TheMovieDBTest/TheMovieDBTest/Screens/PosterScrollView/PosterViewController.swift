@@ -59,7 +59,10 @@ class PosterViewController: UIViewController {
     }
     
     private func loadImage() {
-        guard let urlImagePath = imagePath else { return }
+        guard let urlImagePath = imagePath else {
+            assertionFailure("imagePath bad configured")
+            return
+        }
         let url = URL(string: "https://image.tmdb.org/t/p/w780/\(urlImagePath)")
         posterImageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.fill"))
     } 

@@ -14,6 +14,11 @@ class MovieDetailsViewModel {
     weak var screen: MoviewDetailsScreenProtocol?
     var movieDetails: MovieDetails = MovieDetails.movieDetailsSample
     
+    var goToPosterScrollView: ((String) -> Void)?
+    var goToTrailer: ((String) -> Void)?
+    
+    var showTrailer = false
+    
     init(screen: MoviewDetailsScreenProtocol? = nil, moviesService: MoviesService, movieId: Int) {
         self.screen = screen
         self.moviesService = moviesService
@@ -39,6 +44,26 @@ class MovieDetailsViewModel {
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
-        guard indexPath.row == 0 else { return }
+        guard indexPath.row == 0, let posterPath =  movieDetails.posterPath, !posterPath.isEmpty else { return }
+        goToPosterScrollView?(posterPath)
+    }
+    
+    func playTrailer() {
+
+        guard let videos = movieDetails.videos?.results else {
+            print("DEBUG: No videos for this movie")
+            return
+        }
+        
+        let videoDetails = videos.first {
+            ($0.name == "Official Trailer") && ($0.site == "YouTube") && ($0.type == "Trailer")
+        }
+  
+        guard let videoKey = videoDetails?.key else {
+            print("DEBUG: Bad video key")
+            return
+        }
+
+        goToTrailer?(videoKey)
     }
 }

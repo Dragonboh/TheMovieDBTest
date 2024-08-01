@@ -38,6 +38,7 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
         tableView.dataSource = self
         tableView.isHidden = true
 
+        
         fetchData()
     }
     
@@ -100,6 +101,9 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
                 genre.name
             })
             cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating)
+            cell.playTrailerAction = { [weak self] in
+                self?.movieDetailsVM.playTrailer()
+            }
             return cell
         case 2:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieDescriptionCell", for: indexPath) as? MovieDescriptionCell else {
@@ -117,43 +121,5 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         movieDetailsVM.didSelectRowAt(indexPath)
-        
-//        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PosterViewController")
-//        guard let posterViewController = viewController as? PosterViewController else {
-//            assertionFailure("PosterViewController is bad configured in Main storyboard")
-//            return
-//        }
-//        posterViewController.imagePath = movieDetailsVM.movieDetails.posterPath
-//        let navController = UINavigationController(rootViewController: posterViewController)
-//        navigationController?.present(navController, animated: true)
-        
-        let movieDetails = movieDetailsVM.movieDetails
-        guard let videos = movieDetails.videos?.results else {
-            print("DEBUG: No videos for this movie")
-            return
-        }
-        
-        let videoDetails = videos.first {
-            ($0.name == "Official Trailer") && ($0.site == "YouTube") && ($0.type == "Trailer")
-        }
-        
-        guard let videoKey = videoDetails?.key else { return }
-        
-        
-        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "YouTubeVideoPlayerViewController")
-        guard let videoPlayerVC = viewController as? YouTubeVideoPlayerViewController else {
-            assertionFailure("YouTubeVideoPlayerViewController is bad configured in Main storyboard")
-            return
-        }
-        videoPlayerVC.videoId = videoKey
-//        let navController = UINavigationController(rootViewController: videoPlayerVC)
-        
-        if let sheet = videoPlayerVC.sheetPresentationController {
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.large(), .medium()]
-            sheet.selectedDetentIdentifier = .medium
-        }
-        
-        navigationController?.present(videoPlayerVC, animated: true)
     }
 }

@@ -13,7 +13,9 @@ class MovieParametersCell: UITableViewCell {
     @IBOutlet weak var countryYearLabel: UILabel!
     @IBOutlet weak var genresLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var playTrailerButton: UIButton!
     
+    var playTrailerAction: (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -44,4 +46,7 @@ class MovieParametersCell: UITableViewCell {
         ratingLabel.text = "\(rating ?? 0.0)"
     }
 
+    @IBAction func playTrailer(_ sender: Any) {
+        playTrailerAction?()
+    }
 }
