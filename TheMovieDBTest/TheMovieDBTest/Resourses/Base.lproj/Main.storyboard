@@ -299,6 +299,38 @@
             </objects>
             <point key="canvasLocation" x="2603.8167938931297" y="12.67605633802817"/>
         </scene>
+        <!--You Tube Video Player View Controller-->
+        <scene sceneID="biz-6t-qVZ">
+            <objects>
+                <viewController storyboardIdentifier="YouTubeVideoPlayerViewController" id="Imz-JV-OJG" customClass="YouTubeVideoPlayerViewController" customModule="TheMovieDBTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1Mf-Lo-syM">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yk7-VM-qLa" customClass="YTPlayerView">
+                                <rect key="frame" x="0.0" y="236" width="393" height="380"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="380" id="fFd-G2-xTr"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H50-da-mSt"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="H50-da-mSt" firstAttribute="trailing" secondItem="yk7-VM-qLa" secondAttribute="trailing" id="Sdg-Lp-ocW"/>
+                            <constraint firstItem="yk7-VM-qLa" firstAttribute="leading" secondItem="H50-da-mSt" secondAttribute="leading" id="Xpf-KN-m1L"/>
+                            <constraint firstItem="yk7-VM-qLa" firstAttribute="centerY" secondItem="1Mf-Lo-syM" secondAttribute="centerY" id="uwd-Fy-wRE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="playerView" destination="yk7-VM-qLa" id="W4k-fo-cNQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pkI-t3-PzS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3440" y="13"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="184-vm-Xfj">
             <objects>
