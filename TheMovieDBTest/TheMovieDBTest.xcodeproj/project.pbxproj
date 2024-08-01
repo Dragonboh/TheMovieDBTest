@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8404C6222C5BA0A400F71099 /* PosterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6212C5BA0A400F71099 /* PosterViewController.swift */; };
 		843C61DB2C5A71510062C8FB /* UIViewControllerExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DA2C5A71510062C8FB /* UIViewControllerExtentions.swift */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8404C6212C5BA0A400F71099 /* PosterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
 		843C61DA2C5A71510062C8FB /* UIViewControllerExtentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtentions.swift; sourceTree = "<group>"; };
 		843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviewDetails.swift; sourceTree = "<group>"; };
 		843C61DE2C5A78D10062C8FB /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
@@ -71,6 +73,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8404C6202C5BA07B00F71099 /* PosterScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				8404C6212C5BA0A400F71099 /* PosterViewController.swift */,
+			);
+			path = PosterScrollView;
+			sourceTree = "<group>";
+		};
 		843C61D92C5A713A0062C8FB /* Extentions */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +128,7 @@
 		8479FC9E2C56A3AE00E36F3F /* TheMovieDBTest */ = {
 			isa = PBXGroup;
 			children = (
+				8404C6202C5BA07B00F71099 /* PosterScrollView */,
 				843C61D92C5A713A0062C8FB /* Extentions */,
 				843F81AC2C5A3DEA009BAF89 /* MovieDetails */,
 				8479FCC42C580C1500E36F3F /* Router */,
@@ -263,6 +274,7 @@
 				8479FCA42C56A3AE00E36F3F /* MoviesListViewController.swift in Sources */,
 				843C61DB2C5A71510062C8FB /* UIViewControllerExtentions.swift in Sources */,
 				8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */,
+				8404C6222C5BA0A400F71099 /* PosterViewController.swift in Sources */,
 				8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */,
 				843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */,
 				8479FCA02C56A3AE00E36F3F /* AppDelegate.swift in Sources */,

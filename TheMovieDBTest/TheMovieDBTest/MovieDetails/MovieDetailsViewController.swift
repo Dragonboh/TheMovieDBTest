@@ -117,5 +117,13 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         movieDetailsVM.didSelectRowAt(indexPath)
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PosterViewController")
+        guard let posterViewController = viewController as? PosterViewController else {
+            assertionFailure("PosterViewController is bad configured in Main storyboard")
+            return
+        }
+        posterViewController.imagePath = movieDetailsVM.movieDetails.posterPath
+        let navController = UINavigationController(rootViewController: posterViewController)
+        navigationController?.present(navController, animated: true)
     }
 }

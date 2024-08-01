@@ -260,6 +260,53 @@
             </objects>
             <point key="canvasLocation" x="1813" y="13"/>
         </scene>
+        <!--Poster View Controller-->
+        <scene sceneID="cqc-Ui-pu8">
+            <objects>
+                <viewController storyboardIdentifier="PosterViewController" id="dW5-lW-Lii" customClass="PosterViewController" customModule="TheMovieDBTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Nua-On-AkZ">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s03-9f-TJw">
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QbM-f1-IMt">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="759"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="QbM-f1-IMt" secondAttribute="bottom" id="SEc-ZJ-O9J"/>
+                                    <constraint firstItem="QbM-f1-IMt" firstAttribute="leading" secondItem="s03-9f-TJw" secondAttribute="leading" id="aZq-bC-YUV"/>
+                                    <constraint firstAttribute="trailing" secondItem="QbM-f1-IMt" secondAttribute="trailing" id="bXL-mu-vs1"/>
+                                    <constraint firstItem="QbM-f1-IMt" firstAttribute="top" secondItem="s03-9f-TJw" secondAttribute="top" id="wwH-k5-OUL"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="cQu-ZT-nIc"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="GIh-ee-Ucz"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="JP6-d1-aCV"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="s03-9f-TJw" secondAttribute="trailing" id="9vp-oG-gRe"/>
+                            <constraint firstItem="s03-9f-TJw" firstAttribute="top" secondItem="Nua-On-AkZ" secondAttribute="top" id="KXd-MQ-YVd"/>
+                            <constraint firstItem="s03-9f-TJw" firstAttribute="leading" secondItem="Nua-On-AkZ" secondAttribute="leading" id="Sgb-nT-pBZ"/>
+                            <constraint firstAttribute="bottom" secondItem="s03-9f-TJw" secondAttribute="bottom" id="UQk-cP-kv9"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageViewBottomConstraint" destination="SEc-ZJ-O9J" id="Cod-1l-aCy"/>
+                        <outlet property="imageViewLeadingConstraint" destination="aZq-bC-YUV" id="FbX-Ma-DzK"/>
+                        <outlet property="imageViewTopConstraint" destination="wwH-k5-OUL" id="uWR-yC-iRy"/>
+                        <outlet property="imageViewTrailingConstraint" destination="bXL-mu-vs1" id="JQN-Sg-VQ6"/>
+                        <outlet property="posterImageView" destination="QbM-f1-IMt" id="dHH-Ge-dEw"/>
+                        <outlet property="scrollView" destination="s03-9f-TJw" id="vtO-xq-Gne"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jUT-QE-ksO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2603.8167938931297" y="12.67605633802817"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="184-vm-Xfj">
             <objects>
@@ -290,13 +337,13 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemOrangeColor">
-            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPurpleColor">
-            <color red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68627450980000004" green="0.32156862749999998" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemTealColor">
-            <color red="0.18823529411764706" green="0.69019607843137254" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.18823529410000001" green="0.69019607839999997" blue="0.78039215689999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
