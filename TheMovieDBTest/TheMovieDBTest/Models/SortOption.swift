@@ -15,7 +15,7 @@ enum SortOption: SortByQuery {
     var title: String {
         switch self {
         case .popularity:
-            "BY popularity (default)"
+            "By popularity (default)"
         case .title:
             "By title"
         case .rating:

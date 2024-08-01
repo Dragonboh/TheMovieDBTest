@@ -185,28 +185,11 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         let movie = moviesListVM.movies[indexPath.row]
         
-        
-        cell.imageName = movie.backdropPath
-         
-//        moviesListVM.loadImage() { data in
-//            guard let image = UIImage(data: data) else {
-//                print("DEBUG: cannot decode image")
-//                return
-//            }
-//            
-//            if cell.imageName == movie.backdropPath {
-//                DispatchQueue.main.async { [weak cell] in
-//                    cell?.movieImageView.image = image
-//                }
-//            }
-//        }
-        
-        cell.titleAndYearLabel.text = "\(movie.title), \(movie.releaseDate)"
-        cell.genresLabel.text = movie.genres?.reduce("", { partialResult, genre in
-            return partialResult.appending(", \(genre)")
+        let genres = movie.genres?.map({ genre in
+            genre.name
         })
-        cell.ratingLabel.text = "\(movie.rating)"
         
+        cell.configure(title: movie.title, year: movie.releaseDate, rating: movie.rating, genres: genres, imagePath: movie.backdropPath)
         return cell
         
     }

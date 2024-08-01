@@ -28,6 +28,10 @@ enum AllGenre: Int, Codable {
     case Thriller = 53
     case war = 10752
     case western = 37
+    
+    var name: String {
+        return "Genre"
+    }
 }
 
 struct Genre: Codable {

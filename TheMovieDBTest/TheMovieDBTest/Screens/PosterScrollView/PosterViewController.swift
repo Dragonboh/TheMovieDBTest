@@ -59,40 +59,9 @@ class PosterViewController: UIViewController {
     }
     
     private func loadImage() {
-        guard let urlImageName = imagePath else { return }
-        
-        let url = URL(string: "https://image.tmdb.org/t/p/original/\(urlImageName)")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        progressHUD.show(in: view)
-        let imageTask = URLSession.shared.dataTask(with: request) { [weak self] data, responce, error in
-            if let error = error {
-                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let _ = responce as? HTTPURLResponse else {
-                print("DEBUG: bad response")
-                return
-            }
-            
-            guard let data = data else {
-                print("DEBUG: no data")
-                return
-            }
-            
-            guard let image = UIImage(data: data) else {
-                print("DEBUG: cannot decode image")
-                return
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                self?.progressHUD.dismiss()
-                self?.posterImageView.image = image
-            }
-        }
-        imageTask.resume()
+        guard let urlImagePath = imagePath else { return }
+        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(urlImagePath)")
+        posterImageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.fill"))
     } 
 }
 
@@ -110,7 +79,6 @@ extension PosterViewController: UIScrollViewDelegate {
         imageViewTopConstraint.constant = yOffset
         imageViewBottomConstraint.constant = yOffset
         
-        //4
         let xOffset = max(0, (size.width - posterImageView.frame.width) / 2)
         imageViewLeadingConstraint.constant = xOffset	
         imageViewTrailingConstraint.constant = xOffset

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8404C6222C5BA0A400F71099 /* PosterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6212C5BA0A400F71099 /* PosterViewController.swift */; };
-		843C61DB2C5A71510062C8FB /* UIViewControllerExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DA2C5A71510062C8FB /* UIViewControllerExtentions.swift */; };
+		8404C6252C5C05D500F71099 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8404C6242C5C05D500F71099 /* Kingfisher */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
 		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
@@ -35,7 +35,6 @@
 
 /* Begin PBXFileReference section */
 		8404C6212C5BA0A400F71099 /* PosterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
-		843C61DA2C5A71510062C8FB /* UIViewControllerExtentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtentions.swift; sourceTree = "<group>"; };
 		843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviewDetails.swift; sourceTree = "<group>"; };
 		843C61DE2C5A78D10062C8FB /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
@@ -65,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8404C6252C5C05D500F71099 /* Kingfisher in Frameworks */,
 				843F81BA2C5A520C009BAF89 /* JGProgressHUD in Frameworks */,
 				8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */,
 			);
@@ -81,12 +81,24 @@
 			path = PosterScrollView;
 			sourceTree = "<group>";
 		};
-		843C61D92C5A713A0062C8FB /* Extentions */ = {
+		8404C6262C5C0C5C00F71099 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				843C61DA2C5A71510062C8FB /* UIViewControllerExtentions.swift */,
+				843F81AC2C5A3DEA009BAF89 /* MovieDetails */,
+				8479FCC02C57E01800E36F3F /* PopularMoviesList */,
+				8404C6202C5BA07B00F71099 /* PosterScrollView */,
 			);
-			path = Extentions;
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		8404C6272C5C139000F71099 /* Resourses */ = {
+			isa = PBXGroup;
+			children = (
+				8479FCA82C56A3B000E36F3F /* Assets.xcassets */,
+				8479FCAA2C56A3B000E36F3F /* LaunchScreen.storyboard */,
+				8479FCA52C56A3AE00E36F3F /* Main.storyboard */,
+			);
+			path = Resourses;
 			sourceTree = "<group>";
 		};
 		843F81AC2C5A3DEA009BAF89 /* MovieDetails */ = {
@@ -128,17 +140,12 @@
 		8479FC9E2C56A3AE00E36F3F /* TheMovieDBTest */ = {
 			isa = PBXGroup;
 			children = (
-				8404C6202C5BA07B00F71099 /* PosterScrollView */,
-				843C61D92C5A713A0062C8FB /* Extentions */,
-				843F81AC2C5A3DEA009BAF89 /* MovieDetails */,
-				8479FCC42C580C1500E36F3F /* Router */,
 				8479FCC22C57E06E00E36F3F /* App */,
-				8479FCA82C56A3B000E36F3F /* Assets.xcassets */,
+				8479FCC42C580C1500E36F3F /* Coordinator */,
 				8479FCAD2C56A3B000E36F3F /* Info.plist */,
-				8479FCAA2C56A3B000E36F3F /* LaunchScreen.storyboard */,
-				8479FCA52C56A3AE00E36F3F /* Main.storyboard */,
 				8479FCC32C57E07E00E36F3F /* Models */,
-				8479FCC02C57E01800E36F3F /* PopularMoviesList */,
+				8404C6272C5C139000F71099 /* Resourses */,
+				8404C6262C5C0C5C00F71099 /* Screens */,
 				8479FCC12C57E04E00E36F3F /* Services */,
 			);
 			path = TheMovieDBTest;
@@ -183,12 +190,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		8479FCC42C580C1500E36F3F /* Router */ = {
+		8479FCC42C580C1500E36F3F /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
 				8479FCC52C580C2D00E36F3F /* Coordinator.swift */,
 			);
-			path = Router;
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,6 +217,7 @@
 			packageProductDependencies = (
 				8479FCBE2C57DEE800E36F3F /* UIScrollView_InfiniteScroll */,
 				843F81B92C5A520C009BAF89 /* JGProgressHUD */,
+				8404C6242C5C05D500F71099 /* Kingfisher */,
 			);
 			productName = TheMovieDBTest;
 			productReference = 8479FC9C2C56A3AE00E36F3F /* TheMovieDBTest.app */;
@@ -242,6 +250,7 @@
 			packageReferences = (
 				8479FCBD2C57DEE800E36F3F /* XCRemoteSwiftPackageReference "UIScrollView-InfiniteScroll" */,
 				843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+				8404C6232C5C05D500F71099 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 8479FC9D2C56A3AE00E36F3F /* Products */;
 			projectDirPath = "";
@@ -272,7 +281,6 @@
 			files = (
 				8479FCB42C56A7FD00E36F3F /* MovieModel.swift in Sources */,
 				8479FCA42C56A3AE00E36F3F /* MoviesListViewController.swift in Sources */,
-				843C61DB2C5A71510062C8FB /* UIViewControllerExtentions.swift in Sources */,
 				8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */,
 				8404C6222C5BA0A400F71099 /* PosterViewController.swift in Sources */,
 				8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */,
@@ -523,6 +531,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8404C6232C5C05D500F71099 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
+			};
+		};
 		843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
@@ -542,6 +558,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8404C6242C5C05D500F71099 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8404C6232C5C05D500F71099 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		843F81B92C5A520C009BAF89 /* JGProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;

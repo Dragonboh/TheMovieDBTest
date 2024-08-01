@@ -13,6 +13,8 @@ protocol SortByQuery {
 
 final class MoviesService {
     
+    private let authorizationToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
+    
     func fetchPopularMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping ([MovieModel]?, String?) -> Void) {
         let url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
@@ -26,11 +28,10 @@ final class MoviesService {
         components.queryItems = components.queryItems.map { $0 + queryItems } ?? queryItems
 
         var request = URLRequest(url: components.url!)
-        request.httpMethod = "GET"
         request.timeoutInterval = 10
         request.allHTTPHeaderFields = [
           "accept": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
+          "Authorization": authorizationToken
         ]
         
         URLSession.shared.dataTask(with: request) { data, responce, error in
@@ -61,16 +62,6 @@ final class MoviesService {
                 print(error.localizedDescription)
                 complition(nil, "DEBUG: cannot decode JSON")
             }
-//            guard let results = try? JSONDecoder().decode(Response<MovieModel>.self, from: data) else {
-//                let jsonObject = try? JSONSerialization.jsonObject(with: data)
-//                print(jsonObject)
-//                print("DEBUG: cannot decode JSON")
-//                return
-//            }
-//            
-//            DispatchQueue.main.async {
-//                complition(results.results)
-//            }
         }.resume()
     }
     
@@ -88,7 +79,7 @@ final class MoviesService {
         request.timeoutInterval = 10
         request.allHTTPHeaderFields = [
           "accept": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
+          "Authorization": authorizationToken
         ]
 
         URLSession.shared.dataTask(with: request) { data, response, error in
