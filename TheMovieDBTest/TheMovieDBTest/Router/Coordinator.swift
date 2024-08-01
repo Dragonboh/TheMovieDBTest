@@ -39,7 +39,6 @@ class Coordinator {
         }
         let viewModel = MovieDetailsViewModel(screen: movieDetailsVC, moviesService: MoviesService(), movieId: movieId)
         movieDetailsVC.movieDetailsVM = viewModel
-        
         navigationVC?.pushViewController(movieDetailsVC, animated: true)
     }
 }

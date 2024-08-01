@@ -37,7 +37,7 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
         tableView.delegate = self
         tableView.dataSource = self
         tableView.isHidden = true
-        
+
         fetchData()
     }
     
@@ -48,6 +48,7 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
         case .loadingFinished:
             print("DEBUG: loading movie details finished")
             progressHUD.dismiss()
+            setTitle()
             tableView.isHidden = false
             tableView.reloadData()
         case .error(let errorMessage):
@@ -55,6 +56,10 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
             showAlertError(message: errorMessage)
             print("Debug: error ucurred: \(errorMessage)")
         }
+    }
+    
+    private func setTitle() {
+        navigationItem.title = movieDetailsVM.movieDetails.title
     }
     
     private func fetchData() {
@@ -74,21 +79,27 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let movieDetails = movieDetailsVM.movieDetails
+        
         switch indexPath.row {
         case 0:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MoviePosterCell", for: indexPath) as? MoviePosterCell else {
                 assertionFailure("MoviePosterCell is bad configured")
                 return UITableViewCell()
             }
+            
+            cell.configure(imagePath: movieDetails.posterPath)
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieParametersCell", for: indexPath) as? MovieParametersCell else {
                 assertionFailure("MovieParametersCell is bad configured")
                 return UITableViewCell()
             }
-            
-            let movieDetails = movieDetailsVM.movieDetails
-            cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: [], rating: movieDetails.rating)
+    
+            let genres = movieDetails.genres?.map({ genre in
+                genre.name
+            })
+            cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating)
             return cell
         case 2:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieDescriptionCell", for: indexPath) as? MovieDescriptionCell else {
@@ -96,10 +107,15 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
                 return UITableViewCell()
             }
             
+            cell.config(description: movieDetails.overview)
             return cell
         default:
             assertionFailure("this table view can't have more than 3 cell")
             return UITableViewCell()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        movieDetailsVM.didSelectRowAt(indexPath)
     }
 }

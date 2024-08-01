@@ -111,8 +111,6 @@ final class MoviesService {
             }
             
             do {
-//                guard let json = try? JSONSerialization.jsonObject(with: data) else { return   }
-//                print(json)
                 let results = try JSONDecoder().decode(MovieDetails.self, from: data)
                 
                 complition(.success(results))

@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum Genre: Int, Codable {
+enum AllGenre: Int, Codable {
     case action = 28
     case adventure = 12
     case animation = 16
@@ -28,6 +28,11 @@ enum Genre: Int, Codable {
     case Thriller = 53
     case war = 10752
     case western = 37
+}
+
+struct Genre: Codable {
+    let id: Int
+    let name: String
 }
 
 

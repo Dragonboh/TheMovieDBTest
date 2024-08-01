@@ -21,5 +21,9 @@ class MovieDescriptionCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    func config(description: String?) {
+        movieDescriptionLabel.text = description
+    }
 
 }

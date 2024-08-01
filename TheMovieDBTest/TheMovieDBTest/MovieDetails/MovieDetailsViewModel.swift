@@ -12,7 +12,7 @@ class MovieDetailsViewModel {
     private let movieId: Int
     
     weak var screen: MoviewDetailsScreenProtocol?
-    var movieDetails: MovieDetails = MovieDetails(id: 0, posterPath: "", country: [], releaseDate: "", title: "", originalTitle: "", rating: 0.0, videos: nil)
+    var movieDetails: MovieDetails = MovieDetails.movieDetailsSample
     
     init(screen: MoviewDetailsScreenProtocol? = nil, moviesService: MoviesService, movieId: Int) {
         self.screen = screen
@@ -36,5 +36,9 @@ class MovieDetailsViewModel {
                 }
             }
         }
+    }
+    
+    func didSelectRowAt(_ indexPath: IndexPath) {
+        guard indexPath.row == 0 else { return }
     }
 }
