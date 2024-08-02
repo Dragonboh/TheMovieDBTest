@@ -26,7 +26,6 @@ class MoviesListViewModel {
     }
 
     func fetchInitialData() {
-        movies = []
         screen?.updateState(state: .initialDataLoadingStart)
         fetchData(page: 1) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
@@ -69,18 +68,18 @@ class MoviesListViewModel {
     }
     
     private func fetchData(page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        moviesService.fetchPopularMovies(page: page, sortBy: currentSortOption) { [weak self] data, errorMessage in
+        moviesService.fetchPopularMovies(page: page, sortBy: currentSortOption) { [weak self] result in
             guard let self = self else { return }
             
-            if let errorMessage = errorMessage {
-                print("DEBUG: error in fetching data for popular movies list: \(errorMessage)")
-                complition(.failure(.error(errorMessage)))
+            switch result {
+            case .success(let moviesArray):
+                totalPagesDownloaded = page
+                complition(.success(moviesArray))
+            case .failure(let errorMessage):
+                print("DEBUG: error in fetching data for popular movies list: \(errorMessage.errorMessage)")
+                complition(.failure(.error(errorMessage.errorMessage)))
                 return
             }
-            
-            guard let moviesArray = data else { return }
-            totalPagesDownloaded = page
-            complition(.success(moviesArray))
         }
     }
 }
