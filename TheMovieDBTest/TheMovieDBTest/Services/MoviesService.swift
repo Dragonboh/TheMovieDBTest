@@ -84,7 +84,7 @@ final class MoviesService {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
+                print("DEBUG: error in getting moview details, error: \(error.localizedDescription)")
                 complition(.failure(.error(error.localizedDescription)))
                 return
             }
