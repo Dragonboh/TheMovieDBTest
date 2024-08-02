@@ -17,7 +17,7 @@ class MovieDetailsViewModel {
     var goToPosterScrollView: ((String) -> Void)?
     var goToTrailer: ((String) -> Void)?
     
-    var showTrailer = false
+    var videoKey = ""
     
     init(screen: MoviewDetailsScreenProtocol? = nil, moviesService: MoviesService, movieId: Int) {
         self.screen = screen
@@ -49,7 +49,12 @@ class MovieDetailsViewModel {
     }
     
     func playTrailer() {
-
+        if !videoKey.isEmpty {
+            goToTrailer?(videoKey)
+        }
+    }
+    
+    private func findVideoKey() {
         guard let videos = movieDetails.videos?.results else {
             print("DEBUG: No videos for this movie")
             return
@@ -63,7 +68,7 @@ class MovieDetailsViewModel {
             print("DEBUG: Bad video key")
             return
         }
-
-        goToTrailer?(videoKey)
+        
+        self.videoKey = videoKey
     }
 }

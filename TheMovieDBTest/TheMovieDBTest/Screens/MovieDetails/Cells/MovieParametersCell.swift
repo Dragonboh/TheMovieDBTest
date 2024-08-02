@@ -19,6 +19,7 @@ class MovieParametersCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        playTrailerButton.isHidden = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -27,7 +28,7 @@ class MovieParametersCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String?, country: [String]?, year: String?, genres: [String]?, rating: Double?) {
+    func configure(title: String?, country: [String]?, year: String?, genres: [String]?, rating: Double?, isTrailerEnable: Bool) {
         moviewTitleLabel.text = title
         
         var coutryYearString = ""

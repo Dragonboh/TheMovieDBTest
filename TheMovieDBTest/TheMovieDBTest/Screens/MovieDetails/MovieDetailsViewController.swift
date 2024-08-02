@@ -100,7 +100,7 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
             let genres = movieDetails.genres?.map({ genre in
                 genre.name
             })
-            cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating)
+            cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating, isTrailerEnable: !movieDetailsVM.videoKey.isEmpty)
             cell.playTrailerAction = { [weak self] in
                 self?.movieDetailsVM.playTrailer()
             }

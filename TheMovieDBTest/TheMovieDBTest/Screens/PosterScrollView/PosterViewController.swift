@@ -48,6 +48,10 @@ class PosterViewController: UIViewController {
         updateMinZoomScaleForSize(view.bounds.size)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        updateConstraintsForSize(view.bounds.size)
+    }
+    
     private func updateMinZoomScaleForSize(_ size: CGSize) {
         let widthScale = size.width / posterImageView.bounds.width
         let heightScale = size.height / posterImageView.bounds.height
