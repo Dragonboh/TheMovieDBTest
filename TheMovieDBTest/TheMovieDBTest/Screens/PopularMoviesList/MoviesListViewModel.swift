@@ -12,13 +12,17 @@ class MoviesListViewModel {
     private let moviesService: MoviesService
     private let router: Coordinator
     
-    private var totalPagesDownloaded = 0
+    private var initialTotalPages = 0
+    private var searchTotalPages = 0
+    private var initialMovies: [MovieModel] = []
+    private var isSearching = false
+    private var searchQuery = ""
     
     weak var screen: MovieListScreenProtocol?
     
     var goToMovieDetailsScreen: ((Int) -> Void)?
     var currentSortOption: SortOption = .popularity
-    var movies: [MovieModel] = []
+    var filteredMovies: [MovieModel] = []
     
     init(moviesService: MoviesService, router: Coordinator) {
         self.moviesService = moviesService
@@ -28,14 +32,15 @@ class MoviesListViewModel {
     func fetchInitialData() {
         screen?.updateState(state: .initialDataLoadingStart)
         fetchData(page: 1) { [weak self] result in
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+            guard let self = self else { return }
+            DispatchQueue.main.async {
                 switch result {
                 case .success(let moviesArray):
-                    movies = moviesArray
-                    screen?.updateState(state: .initialDataLoadingFinished)
+                    self.initialMovies = moviesArray
+                    self.filteredMovies = moviesArray
+                    self.screen?.updateState(state: .initialDataLoadingFinished)
                 case .failure(let failure):
-                    screen?.updateState(state: .error(failure.errorMessage))
+                    self.screen?.updateState(state: .error(failure.errorMessage))
                 }
             }
         }
@@ -43,37 +48,71 @@ class MoviesListViewModel {
     
     func fetchMoreData() {
         screen?.updateState(state: .moreDataLoadingStart)
-        fetchData(page: totalPagesDownloaded + 1) { [weak self] result in
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+        if isSearching {
+            seachData()
+            return
+        }
+        fetchData(page: initialTotalPages + 1) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
                 switch result {
                 case .success(let moreData):
-                    let startIndex = movies.count
-                    let endIndex = movies.count + moreData.count
+                    let startIndex = self.filteredMovies.count
+                    let endIndex = self.filteredMovies.count + moreData.count
                     let indices = Array(startIndex..<endIndex).compactMap {
                         IndexPath(row: $0, section: 0)
                     }
-                    movies.append(contentsOf: moreData)
-                    screen?.updateState(state: .moreDataLoadedFinished(indices))
+                    self.initialMovies.append(contentsOf: moreData)
+                    self.filteredMovies.append(contentsOf: moreData)
+                    self.screen?.updateState(state: .moreDataLoadedFinished(indices))
                 case .failure(let failure):
-                    screen?.updateState(state: .error(failure.errorMessage))
+                    self.screen?.updateState(state: .error(failure.errorMessage))
                 }
             }
         }
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
-        let movie = movies[indexPath.row]
+        let movie = filteredMovies[indexPath.row]
         goToMovieDetailsScreen?(movie.id)
     }
     
+    func updateSearchResults() {
+        filteredMovies = []
+        screen?.updateState(state: .reloadData)
+    }
+    
+    func searchBarCancelButtonClicked() {
+        filteredMovies = initialMovies
+        screen?.updateState(state: .reloadData)
+    }
+    
+    func searchMovie(title: String) {
+//        if name.isEmpty {
+//            filteredMovies = movies
+//            return
+//        }
+//        filteredMovies = movies
+//        screen?.updateState(state: .finishSearch)
+        isSearching = true
+        searchQuery = title
+        screen?.updateState(state: .initialDataLoadingStart)
+        seachData()
+    }
+    
+    private func filterMovie(title: String) {
+        filteredMovies = initialMovies.filter({ movie in
+            movie.title?.lowercased().contains(title.lowercased()) ?? false
+        })
+    }
+    
     private func fetchData(page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        moviesService.fetchPopularMovies(page: page, sortBy: currentSortOption) { [weak self] result in
+        moviesService.fetchMovies(page: page, sortBy: currentSortOption) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let moviesArray):
-                totalPagesDownloaded = page
+                initialTotalPages = page
                 complition(.success(moviesArray))
             case .failure(let errorMessage):
                 print("DEBUG: error in fetching data for popular movies list: \(errorMessage.errorMessage)")
@@ -82,4 +121,30 @@ class MoviesListViewModel {
             }
         }
     }
+    
+    private func seachData() {
+        moviesService.searchMovieByTitle(searchQuery, page: searchTotalPages + 1) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let moviesArray):
+                    self.searchTotalPages += 1
+                    self.filteredMovies = moviesArray
+                    self.screen?.updateState(state: .initialDataLoadingFinished)
+                case .failure(let errorMessage):
+                    print("DEBUG: error in fetching data for popular movies list: \(errorMessage.errorMessage)")
+                    self.filterMovie(title: self.searchQuery)
+                    self.screen?.updateState(state: .error(errorMessage.errorMessage))
+                    self.screen?.updateState(state: .reloadData)
+                    return
+                }
+            }
+        }
+    }
+    
+//    private func updateState(state: MovieListState) {
+//        DispatchQueue.main.async { [weak self] in
+//            
+//        }
+//    }
 }

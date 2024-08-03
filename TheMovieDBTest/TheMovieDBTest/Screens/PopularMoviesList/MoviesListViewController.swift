@@ -14,6 +14,7 @@ enum MovieListState {
     case initialDataLoadingFinished
     case moreDataLoadingStart
     case moreDataLoadedFinished([IndexPath])
+    case reloadData
     case error(String)
 }
 
@@ -24,6 +25,8 @@ protocol MovieListScreenProtocol: AnyObject {
 class MoviesListViewController: UIViewController, MovieListScreenProtocol {
 
     @IBOutlet weak var tableview: UITableView!
+    
+    private let searchController = UISearchController(searchResultsController: nil)
     
     lazy var progressHUD: JGProgressHUD = {
         let hud = JGProgressHUD()
@@ -49,6 +52,9 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         super.viewDidLoad()
         
         setUpNavigationBar()
+        searchController.searchResultsUpdater = self
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
         
         tableview.estimatedRowHeight = 240
         tableview.rowHeight = UITableView.automaticDimension
@@ -59,8 +65,9 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
     }
     
     private func setUpNavigationBar() {
-        navigationItem.title = "Popular Movies"
+        title = "Popular Movies"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+//        navigationItem.searchController = searchController
     }
     
     func updateState(state: MovieListState) {
@@ -75,8 +82,8 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             } else {
                 progressHUD.dismiss()
             }
-            tableview.isHidden = false
             tableview.reloadData()
+            tableview.isHidden = false
         case .moreDataLoadingStart:
             tableview.beginInfiniteScroll(false)
         case .moreDataLoadedFinished(let indices):
@@ -97,6 +104,9 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             
             progressHUD.dismiss()
             showAlertError(message: errorMessage)
+        case .reloadData:
+            tableview.reloadData()
+            tableview.isHidden = false
         }
     }
     
@@ -177,13 +187,13 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
 
 extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        moviesListVM.movies.count
+        moviesListVM.filteredMovies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MoviewCell", for: indexPath) as! MoviewCell
         
-        let movie = moviesListVM.movies[indexPath.row]
+        let movie = moviesListVM.filteredMovies[indexPath.row]
         
         let genres = movie.genres?.map({ genre in
             genre.name
@@ -191,7 +201,6 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
         
         cell.configure(title: movie.title, year: movie.releaseDate, rating: movie.rating, genres: genres, imagePath: movie.backdropPath)
         return cell
-        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -202,7 +211,7 @@ extension MoviesListViewController: UITableViewDataSource, UITableViewDelegate {
 extension MoviesListViewController: UIScrollViewDelegate {
     private func offset(_ scrollView: UIScrollView) -> Double {
         let offset = scrollView.contentOffset.y
-        let contentHeight = Double(moviesListVM.movies.count * 240)
+        let contentHeight = Double(moviesListVM.filteredMovies.count * 240)
         let onScreen = scrollView.frame.size.height
         let counter = contentHeight - offset - onScreen
         
@@ -222,6 +231,42 @@ extension MoviesListViewController: UIScrollViewDelegate {
         if counter < -11.0 {
             fetchMoreData(endDragging: true)
         }
+    }
+}
+
+extension MoviesListViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+//        guard let text = searchController.searchBar.text else {
+//            return
+//        }
+////        print("updateSearchResults:  -\(text)-")
+////        tableview.isHidden = true
+//        moviesListVM.filterMovie(name: text)
+////        moviesListVM.updateSearchResults()
+//        tableview.reloadData()
+    }
+    
+    func willDismissSearchController(_ searchController: UISearchController) {
+        print("willDismissSearchController")
+    }
+    
+    func willPresentSearchController(_ searchController: UISearchController) {
+        tableview.isHidden = true
+    }
+    
+//    func didPresentSearchController(_ searchController: UISearchController) {
+//        tableview.isHidden = true
+//    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        print("searchBarSearchButtonClicked")
+        guard let text = searchController.searchBar.text else { return }
+        moviesListVM.searchMovie(title: text)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("searchBarCancelButtonClicked")
+        moviesListVM.searchBarCancelButtonClicked()
     }
 }
 
