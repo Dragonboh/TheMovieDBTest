@@ -12,6 +12,9 @@
 		8404C62A2C5C233400F71099 /* YouTubeiOSPlayerHelper in Frameworks */ = {isa = PBXBuildFile; productRef = 8404C6292C5C233400F71099 /* YouTubeiOSPlayerHelper */; };
 		8404C62D2C5C23CB00F71099 /* YouTubeVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C62C2C5C23CB00F71099 /* YouTubeVideoPlayerViewController.swift */; };
 		8404C62F2C5CE7E000F71099 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C62E2C5CE7E000F71099 /* NetworkMonitor.swift */; };
+		8404C6322C5E876900F71099 /* MoviesListPlaceholders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6312C5E876900F71099 /* MoviesListPlaceholders.swift */; };
+		8404C6352C5E879500F71099 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6342C5E879500F71099 /* SwiftUIView.swift */; };
+		8404C6372C5E881500F71099 /* UITableView + Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6362C5E881500F71099 /* UITableView + Background.swift */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
 		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
@@ -40,6 +43,9 @@
 		8404C6212C5BA0A400F71099 /* PosterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
 		8404C62C2C5C23CB00F71099 /* YouTubeVideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeVideoPlayerViewController.swift; sourceTree = "<group>"; };
 		8404C62E2C5CE7E000F71099 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		8404C6312C5E876900F71099 /* MoviesListPlaceholders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListPlaceholders.swift; sourceTree = "<group>"; };
+		8404C6342C5E879500F71099 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		8404C6362C5E881500F71099 /* UITableView + Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView + Background.swift"; sourceTree = "<group>"; };
 		843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviewDetails.swift; sourceTree = "<group>"; };
 		843C61DE2C5A78D10062C8FB /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +122,24 @@
 			path = VideoPlayer;
 			sourceTree = "<group>";
 		};
+		8404C6302C5E875E00F71099 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8404C6332C5E878300F71099 /* ContentUnavailableView */,
+				8404C6312C5E876900F71099 /* MoviesListPlaceholders.swift */,
+				8404C6362C5E881500F71099 /* UITableView + Background.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8404C6332C5E878300F71099 /* ContentUnavailableView */ = {
+			isa = PBXGroup;
+			children = (
+				8404C6342C5E879500F71099 /* SwiftUIView.swift */,
+			);
+			path = ContentUnavailableView;
+			sourceTree = "<group>";
+		};
 		843F81AC2C5A3DEA009BAF89 /* MovieDetails */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +179,7 @@
 		8479FC9E2C56A3AE00E36F3F /* TheMovieDBTest */ = {
 			isa = PBXGroup;
 			children = (
+				8404C6302C5E875E00F71099 /* Views */,
 				8479FCC22C57E06E00E36F3F /* App */,
 				8479FCC42C580C1500E36F3F /* Coordinator */,
 				8479FCAD2C56A3B000E36F3F /* Info.plist */,
@@ -299,12 +324,14 @@
 			files = (
 				8404C62D2C5C23CB00F71099 /* YouTubeVideoPlayerViewController.swift in Sources */,
 				8479FCB42C56A7FD00E36F3F /* MovieModel.swift in Sources */,
+				8404C6352C5E879500F71099 /* SwiftUIView.swift in Sources */,
 				8479FCA42C56A3AE00E36F3F /* MoviesListViewController.swift in Sources */,
 				8479FCC82C5921CB00E36F3F /* SortOption.swift in Sources */,
 				8404C6222C5BA0A400F71099 /* PosterViewController.swift in Sources */,
 				8479FCBC2C56E0BC00E36F3F /* MoviesService.swift in Sources */,
 				843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */,
 				8479FCA02C56A3AE00E36F3F /* AppDelegate.swift in Sources */,
+				8404C6372C5E881500F71099 /* UITableView + Background.swift in Sources */,
 				843F81B72C5A47C7009BAF89 /* MovieDetailsViewModel.swift in Sources */,
 				843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */,
 				8479FCC62C580C2D00E36F3F /* Coordinator.swift in Sources */,
@@ -313,6 +340,7 @@
 				8479FCB62C56A99300E36F3F /* MoviewCell.swift in Sources */,
 				8479FCA22C56A3AE00E36F3F /* SceneDelegate.swift in Sources */,
 				8479FCBA2C56DBA400E36F3F /* Genre.swift in Sources */,
+				8404C6322C5E876900F71099 /* MoviesListPlaceholders.swift in Sources */,
 				843F81B32C5A4681009BAF89 /* MoviePosterCell.swift in Sources */,
 				8404C62F2C5CE7E000F71099 /* NetworkMonitor.swift in Sources */,
 				843F81B52C5A46DC009BAF89 /* MovieDescriptionCell.swift in Sources */,

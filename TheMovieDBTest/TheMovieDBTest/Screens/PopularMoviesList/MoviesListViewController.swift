@@ -24,7 +24,7 @@ protocol MovieListScreenProtocol: AnyObject {
 
 class MoviesListViewController: UIViewController, MovieListScreenProtocol {
 
-    @IBOutlet weak var tableview: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     
     private let searchController = UISearchController(searchResultsController: nil)
     
@@ -56,10 +56,9 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         searchController.delegate = self
         searchController.searchBar.delegate = self
         
-        tableview.estimatedRowHeight = 240
-        tableview.rowHeight = UITableView.automaticDimension
-        tableview.refreshControl = tableRefreshControl
-        tableview.isHidden = true
+        tableView.estimatedRowHeight = 240
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = tableRefreshControl
         
         fetchInitialData()
     }
@@ -67,7 +66,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
     private func setUpNavigationBar() {
         title = "Popular Movies"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-//        navigationItem.searchController = searchController
+        navigationItem.searchController = searchController
     }
     
     func updateState(state: MovieListState) {
@@ -76,19 +75,23 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             if !isPullToRefreshRunning {
                 progressHUD.show(in: view)
             }
+            
         case .initialDataLoadingFinished:
             if isPullToRefreshRunning {
                 finishPullToRefreshAnimation()
             } else {
                 progressHUD.dismiss()
             }
-            tableview.reloadData()
-            tableview.isHidden = false
+            tableView.isHidden = false
+            tableView.reloadData()
+            
         case .moreDataLoadingStart:
-            tableview.beginInfiniteScroll(false)
+            tableView.beginInfiniteScroll(false)
+            
         case .moreDataLoadedFinished(let indices):
-            tableview.insertRows(at: indices, with: .automatic)
-            tableview.finishInfiniteScroll()
+            tableView.insertRows(at: indices, with: .automatic)
+            tableView.finishInfiniteScroll()
+            
         case .error(let errorMessage):
             if isPullToRefreshRunning {
                 finishPullToRefreshAnimation()
@@ -98,23 +101,26 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             
             if tableViewDragToEnd {
                 showAlertError(message: errorMessage)
-                tableview.finishInfiniteScroll()
+                tableView.finishInfiniteScroll()
                 break
             }
             
             progressHUD.dismiss()
+            tableView.configure(backgroundView: .failedToLoad)
             showAlertError(message: errorMessage)
+            
         case .reloadData:
-            tableview.reloadData()
-            tableview.isHidden = false
+            tableView.reloadData()
+            tableView.isHidden = false
         }
     }
     
     private func finishPullToRefreshAnimation() {
-        let delay = DispatchTime.now() + .microseconds(500)
-        DispatchQueue.main.asyncAfter(deadline: delay) { [weak self] in
-            self?.tableRefreshControl.endRefreshing()
-        }
+//        let delay = DispatchTime.now() + .microseconds(500)
+//        DispatchQueue.main.asyncAfter(deadline: delay) { [weak self] in
+//            self?.tableRefreshControl.endRefreshing()
+//        }
+        tableRefreshControl.endRefreshing()
         isPullToRefreshRunning = false
     }
     
@@ -127,7 +133,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         print("DEBUG: Fetch more data")
         tableViewDragToEnd = endDragging
         moviesListVM.fetchMoreData()
-        tableview.beginInfiniteScroll(false)
+        tableView.beginInfiniteScroll(false)
     }
     
     private func sortMovies(by sortOption: SortOption) {
@@ -220,7 +226,7 @@ extension MoviesListViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let counter = offset(scrollView)
-        if (counter < lastScrollOffset) && (counter < 2400) && (counter > -11) && (!tableview.isAnimatingInfiniteScroll) {
+        if (counter < lastScrollOffset) && (counter < 2400) && (counter > -11) && (!tableView.isAnimatingInfiniteScroll) {
             fetchMoreData(endDragging: false)
         }
         lastScrollOffset = counter
@@ -228,7 +234,7 @@ extension MoviesListViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let counter = offset(scrollView)
-        if counter < -11.0 {
+        if counter < -11.0 && !moviesListVM.filteredMovies.isEmpty {
             fetchMoreData(endDragging: true)
         }
     }
@@ -251,7 +257,7 @@ extension MoviesListViewController: UISearchResultsUpdating, UISearchControllerD
     }
     
     func willPresentSearchController(_ searchController: UISearchController) {
-        tableview.isHidden = true
+        tableView.isHidden = true
     }
     
 //    func didPresentSearchController(_ searchController: UISearchController) {

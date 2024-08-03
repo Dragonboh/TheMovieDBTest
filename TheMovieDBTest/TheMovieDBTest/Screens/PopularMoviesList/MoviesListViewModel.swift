@@ -88,14 +88,9 @@ class MoviesListViewModel {
     }
     
     func searchMovie(title: String) {
-//        if name.isEmpty {
-//            filteredMovies = movies
-//            return
-//        }
-//        filteredMovies = movies
-//        screen?.updateState(state: .finishSearch)
         isSearching = true
         searchQuery = title
+        searchTotalPages = 0
         screen?.updateState(state: .initialDataLoadingStart)
         seachData()
     }
@@ -128,6 +123,16 @@ class MoviesListViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let moviesArray):
+                    if self.searchTotalPages > 0 {
+                        let startIndex = self.filteredMovies.count
+                        let endIndex = self.filteredMovies.count + moviesArray.count
+                        let indices = Array(startIndex..<endIndex).compactMap {
+                            IndexPath(row: $0, section: 0)
+                        }
+                        
+                        self.filteredMovies.append(contentsOf: moviesArray)
+                        self.screen?.updateState(state: .moreDataLoadedFinished(indices))
+                    }
                     self.searchTotalPages += 1
                     self.filteredMovies = moviesArray
                     self.screen?.updateState(state: .initialDataLoadingFinished)
@@ -141,10 +146,4 @@ class MoviesListViewModel {
             }
         }
     }
-    
-//    private func updateState(state: MovieListState) {
-//        DispatchQueue.main.async { [weak self] in
-//            
-//        }
-//    }
 }
