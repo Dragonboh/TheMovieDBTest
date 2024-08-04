@@ -19,15 +19,11 @@ final class MoviesService {
     var searchCounter = 0
     
     func fetchMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        var url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
-//        var url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
-//        if page > 1 {
+        let url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
+//        if counter > 2 {
 //            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
 //        }
-        if counter > 2 {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
-        }
-        counter += 1
+//        counter += 1
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
           URLQueryItem(name: "include_adult", value: "false"),
@@ -82,11 +78,11 @@ final class MoviesService {
     }
     
     func fetchMovieDetailsAppendVideos(movieId: Int, complition: @escaping (Result<MovieDetails, CustomError>) -> Void) {
-        var url = URL(string: "https://api.themoviedb.org/3/movie/\(movieId)")!
-        if searchCounter > 2 {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
-        }
-        searchCounter += 1
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieId)")!
+//        if searchCounter > 2 {
+//            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
+//        }
+//        searchCounter += 1
         
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
