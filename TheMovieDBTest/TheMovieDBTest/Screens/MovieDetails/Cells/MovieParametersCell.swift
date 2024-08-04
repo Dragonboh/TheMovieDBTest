@@ -46,7 +46,7 @@ class MovieParametersCell: UITableViewCell {
         
         ratingLabel.text = "\(rating ?? 0.0)"
         
-        playTrailerButton.isHidden = isTrailerEnable 
+        playTrailerButton.isHidden = !isTrailerEnable 
     }
 
     @IBAction func playTrailer(_ sender: Any) {

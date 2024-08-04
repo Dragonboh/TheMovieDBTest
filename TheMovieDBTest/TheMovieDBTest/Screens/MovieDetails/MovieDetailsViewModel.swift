@@ -12,7 +12,11 @@ class MovieDetailsViewModel {
     private let movieId: Int
     
     weak var screen: MoviewDetailsScreenProtocol?
-    var movieDetails: MovieDetails = MovieDetails.movieDetailsSample
+    var movieDetails: MovieDetails = MovieDetails.movieDetailsSample {
+        didSet {
+            findVideoKey()
+        }
+    }
     
     var goToPosterScrollView: ((String) -> Void)?
     var goToTrailer: ((String) -> Void)?

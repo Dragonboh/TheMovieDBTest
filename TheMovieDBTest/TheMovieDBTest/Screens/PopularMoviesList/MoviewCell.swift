@@ -15,6 +15,8 @@ class MoviewCell: UITableViewCell {
     @IBOutlet weak var genresLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
     
+    static let identifier = String(describing: MoviewCell.self)
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         contentView.autoresizingMask = .flexibleHeight
@@ -53,7 +55,7 @@ class MoviewCell: UITableViewCell {
         }
 
         guard let imagePath = imagePath else { return }
-        let url = URL(string: "https://image.tmdb.org/t/p/w1280/\(imagePath)")
+        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(imagePath)")
         movieImageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.fill"))
     }
 }

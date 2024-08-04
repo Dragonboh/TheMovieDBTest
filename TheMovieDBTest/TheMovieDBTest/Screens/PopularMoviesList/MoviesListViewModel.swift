@@ -15,8 +15,9 @@ class MoviesListViewModel {
     private var initialTotalPages = 0
     private var searchTotalPages = 0
     private var initialMovies: [MovieModel] = []
-    private var isSearching = false
+    private var isSearchingMode = false
     private var searchQuery = ""
+    private var initialLoading = true
     
     weak var screen: MovieListScreenProtocol?
     
@@ -29,47 +30,33 @@ class MoviesListViewModel {
         self.router = router
     }
 
+    // MARK: - Public API
+    
     func fetchInitialData() {
         screen?.updateState(state: .initialDataLoadingStart)
-        fetchData(page: 1) { [weak self] result in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let moviesArray):
-                    self.initialMovies = moviesArray
-                    self.filteredMovies = moviesArray
-                    self.screen?.updateState(state: .initialDataLoadingFinished)
-                case .failure(let failure):
-                    self.screen?.updateState(state: .error(failure.errorMessage))
-                }
-            }
-        }
+        initialLoading = true
+        initialTotalPages = 0
+        fetchData()
     }
     
     func fetchMoreData() {
         screen?.updateState(state: .moreDataLoadingStart)
-        if isSearching {
-            seachData()
-            return
+        initialLoading = false
+        if isSearchingMode {
+            searchData()
+        } else {
+            fetchData()
         }
-        fetchData(page: initialTotalPages + 1) { [weak self] result in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let moreData):
-                    let startIndex = self.filteredMovies.count
-                    let endIndex = self.filteredMovies.count + moreData.count
-                    let indices = Array(startIndex..<endIndex).compactMap {
-                        IndexPath(row: $0, section: 0)
-                    }
-                    self.initialMovies.append(contentsOf: moreData)
-                    self.filteredMovies.append(contentsOf: moreData)
-                    self.screen?.updateState(state: .moreDataLoadedFinished(indices))
-                case .failure(let failure):
-                    self.screen?.updateState(state: .error(failure.errorMessage))
-                }
-            }
-        }
+    }
+    
+    func searchMovie(title: String) {
+        screen?.updateState(state: .initialDataLoadingStart)
+        isSearchingMode = true
+        initialLoading = true
+        searchQuery = title
+        searchTotalPages = 0
+        filteredMovies = []
+        searchData()
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
@@ -77,22 +64,58 @@ class MoviesListViewModel {
         goToMovieDetailsScreen?(movie.id)
     }
     
-    func updateSearchResults() {
-        filteredMovies = []
-        screen?.updateState(state: .reloadData)
+    
+    // MARK: - Private functions
+    
+    private func fetchData() {
+        let page = initialTotalPages + 1
+        moviesService.fetchMovies(page: page, sortBy: currentSortOption) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let moviesArray):
+                    self.initialTotalPages = page
+                    
+                    if self.initialLoading {
+                        self.initialMovies = moviesArray
+                        self.filteredMovies = moviesArray
+                        self.screen?.updateState(state: .initialDataLoadingFinished)
+                    } else {
+                        self.initialMovies.append(contentsOf: moviesArray)
+                        self.filteredMovies.append(contentsOf: moviesArray)
+                        self.screen?.updateState(state: .moreDataLoadedFinished)
+                    }
+                case .failure(let failure):
+                    self.screen?.updateState(state: .error(failure.errorMessage))
+                }
+            }
+        }
     }
     
-    func searchBarCancelButtonClicked() {
-        filteredMovies = initialMovies
-        screen?.updateState(state: .reloadData)
-    }
-    
-    func searchMovie(title: String) {
-        isSearching = true
-        searchQuery = title
-        searchTotalPages = 0
-        screen?.updateState(state: .initialDataLoadingStart)
-        seachData()
+    private func searchData() {
+        let page = searchTotalPages + 1
+        moviesService.searchMovieByTitle(searchQuery, page: page) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let moviesArray):
+                    self.searchTotalPages = page
+                    self.filteredMovies.append(contentsOf: moviesArray)
+                    if self.initialLoading {
+                        self.screen?.updateState(state: .initialDataLoadingFinished)
+                    } else {
+                        self.screen?.updateState(state: .moreDataLoadedFinished)
+                    }
+                    
+                    
+                case .failure(let errorMessage):
+                    print("DEBUG: error in searching data for title \(self.searchQuery), error: \(errorMessage.errorMessage)")
+                    self.filterMovie(title: self.searchQuery)
+//                    self.screen?.updateState(state: .error(errorMessage.errorMessage))
+//                    self.screen?.updateState(state: .reloadData)
+                }
+            }
+        }
     }
     
     private func filterMovie(title: String) {
@@ -101,49 +124,26 @@ class MoviesListViewModel {
         })
     }
     
-    private func fetchData(page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        moviesService.fetchMovies(page: page, sortBy: currentSortOption) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let moviesArray):
-                initialTotalPages = page
-                complition(.success(moviesArray))
-            case .failure(let errorMessage):
-                print("DEBUG: error in fetching data for popular movies list: \(errorMessage.errorMessage)")
-                complition(.failure(.error(errorMessage.errorMessage)))
-                return
-            }
-        }
+    func searchBarCancelButtonClicked() {
+        filteredMovies = initialMovies
+        isSearchingMode = false
+        searchQuery = ""
+        searchTotalPages = 0
+        screen?.updateState(state: .reloadData)
     }
     
-    private func seachData() {
-        moviesService.searchMovieByTitle(searchQuery, page: searchTotalPages + 1) { [weak self] result in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let moviesArray):
-                    if self.searchTotalPages > 0 {
-                        let startIndex = self.filteredMovies.count
-                        let endIndex = self.filteredMovies.count + moviesArray.count
-                        let indices = Array(startIndex..<endIndex).compactMap {
-                            IndexPath(row: $0, section: 0)
-                        }
-                        
-                        self.filteredMovies.append(contentsOf: moviesArray)
-                        self.screen?.updateState(state: .moreDataLoadedFinished(indices))
-                    }
-                    self.searchTotalPages += 1
-                    self.filteredMovies = moviesArray
-                    self.screen?.updateState(state: .initialDataLoadingFinished)
-                case .failure(let errorMessage):
-                    print("DEBUG: error in fetching data for popular movies list: \(errorMessage.errorMessage)")
-                    self.filterMovie(title: self.searchQuery)
-                    self.screen?.updateState(state: .error(errorMessage.errorMessage))
-                    self.screen?.updateState(state: .reloadData)
-                    return
-                }
-            }
-        }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    func updateSearchResults() {
+        filteredMovies = []
+        screen?.updateState(state: .reloadData)
     }
+ 
 }
