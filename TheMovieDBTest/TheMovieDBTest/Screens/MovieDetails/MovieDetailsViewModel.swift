@@ -8,7 +8,7 @@
 import Foundation
 
 class MovieDetailsViewModel {
-    private let moviesService: MoviesService
+    private let moviesService: MoviesProvidable
     private let movieId: Int
     
     weak var screen: MoviewDetailsScreenProtocol?
@@ -23,8 +23,7 @@ class MovieDetailsViewModel {
     
     var videoKey = ""
     
-    init(screen: MoviewDetailsScreenProtocol? = nil, moviesService: MoviesService, movieId: Int) {
-        self.screen = screen
+    init(moviesService: MoviesProvidable, movieId: Int) {
         self.moviesService = moviesService
         self.movieId = movieId
     }
@@ -48,8 +47,8 @@ class MovieDetailsViewModel {
     }
     
     func didSelectRowAt(_ indexPath: IndexPath) {
-        guard indexPath.row == 0, let posterPath =  movieDetails.posterPath, !posterPath.isEmpty else { return }
-        goToPosterScrollView?(posterPath)
+        guard indexPath.row == 0, let backdropPath = movieDetails.backdropPath, !backdropPath.isEmpty else { return }
+        goToPosterScrollView?(backdropPath)
     }
     
     func playTrailer() {

@@ -14,7 +14,7 @@ class MoviePosterCell: UITableViewCell {
     
     func configure(imagePath: String?) {
         guard let imagePath = imagePath else { return }
-        let url = URL(string: "https://image.tmdb.org/t/p/w780/\(imagePath)")
+        let url = URL(string: "https://image.tmdb.org/t/p/w1280/\(imagePath)")
         moviePosterImageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.fill"))
     }
 }

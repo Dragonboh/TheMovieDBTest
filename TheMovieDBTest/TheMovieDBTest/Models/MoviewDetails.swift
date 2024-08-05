@@ -18,6 +18,7 @@ struct MovieDetails: Codable {
     let videos: MovieResults?
     let overview: String?
     let genres: [Genre]?
+    let backdropPath: String?
     
     enum CodingKeys: String, CodingKey {
         case id, title, videos, overview, genres
@@ -26,9 +27,10 @@ struct MovieDetails: Codable {
         case releaseDate = "release_date"
         case originalTitle = "original_title"
         case rating = "vote_average"
+        case backdropPath = "backdrop_path"
     }
     
-    static let movieDetailsSample = MovieDetails(id: 0, posterPath: "", country: [], releaseDate: "", title: "", originalTitle: "", rating: 0.0, videos: nil, overview: "", genres: [])
+    static let movieDetailsSample = MovieDetails(id: 0, posterPath: "", country: [], releaseDate: "", title: "", originalTitle: "", rating: 0.0, videos: nil, overview: "", genres: [], backdropPath: "")
 }
 
 struct MovieResults: Codable {

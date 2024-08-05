@@ -7,9 +7,17 @@
 
 import Foundation
 
-class MoviesListViewModel {
+protocol PopMoviesListViewModelProtocol {
+    func fetchInitialData()
+    func fetchMoreData()
+    func searchMovie(title: String)
+    func didSelectRowAt(_ indexPath: IndexPath)
+    func searchBarCancelButtonClicked()
+}
+
+class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     
-    private let moviesService: MoviesService
+    private let moviesService: MoviesProvidable
     private let router: Coordinator
     
     private var initialTotalPages = 0
@@ -25,7 +33,7 @@ class MoviesListViewModel {
     var currentSortOption: SortOption = .popularity
     var filteredMovies: [MovieModel] = []
     
-    init(moviesService: MoviesService, router: Coordinator) {
+    init(moviesService: MoviesProvidable, router: Coordinator) {
         self.moviesService = moviesService
         self.router = router
     }
@@ -64,8 +72,37 @@ class MoviesListViewModel {
         goToMovieDetailsScreen?(movie.id)
     }
     
+    func searchBarCancelButtonClicked() {
+        filteredMovies = initialMovies
+        isSearchingMode = false
+        searchQuery = ""
+        searchTotalPages = 0
+        screen?.updateState(state: .reloadData)
+    }
+    
+//    func updateSearchResults() {
+//        filteredMovies = []
+//        screen?.updateState(state: .reloadData)
+//    }
     
     // MARK: - Private functions
+    
+//    private func fetchInitialData() {
+//        screen?.updateState(state: .initialDataLoadingStart)
+//        initialLoading = true
+//        initialTotalPages = 0
+//        fetchData()
+//    }
+//    
+//    private func fetchSearchInitialData() {
+//        screen?.updateState(state: .initialDataLoadingStart)
+//        isSearchingMode = true
+//        initialLoading = true
+//        searchQuery = title
+//        searchTotalPages = 0
+//        filteredMovies = []
+//        searchData()
+//    }
     
     private func fetchData() {
         let page = initialTotalPages + 1
@@ -85,8 +122,8 @@ class MoviesListViewModel {
                         self.filteredMovies.append(contentsOf: moviesArray)
                         self.screen?.updateState(state: .moreDataLoadedFinished)
                     }
-                case .failure(let failure):
-                    self.screen?.updateState(state: .error(failure.errorMessage))
+                case .failure(let error):
+                    self.screen?.updateState(state: .error(error))
                 }
             }
         }
@@ -106,13 +143,17 @@ class MoviesListViewModel {
                     } else {
                         self.screen?.updateState(state: .moreDataLoadedFinished)
                     }
-                    
-                    
-                case .failure(let errorMessage):
-                    print("DEBUG: error in searching data for title \(self.searchQuery), error: \(errorMessage.errorMessage)")
+                case .failure(let error):
+                    print("DEBUG: error in searching data for title \(self.searchQuery), error: \(error.errorMessage)")
                     self.filterMovie(title: self.searchQuery)
-//                    self.screen?.updateState(state: .error(errorMessage.errorMessage))
-//                    self.screen?.updateState(state: .reloadData)
+                    switch error {
+                    case .error(_):
+                        self.screen?.updateState(state: .error(error))
+                    case .noInternetConnection:
+                        self.screen?.updateState(state: .reloadData)
+                        self.screen?.updateState(state: .initialDataLoadingFinished)
+                        self.screen?.updateState(state: .error(error))
+                    }
                 }
             }
         }
@@ -123,27 +164,4 @@ class MoviesListViewModel {
             movie.title?.lowercased().contains(title.lowercased()) ?? false
         })
     }
-    
-    func searchBarCancelButtonClicked() {
-        filteredMovies = initialMovies
-        isSearchingMode = false
-        searchQuery = ""
-        searchTotalPages = 0
-        screen?.updateState(state: .reloadData)
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    func updateSearchResults() {
-        filteredMovies = []
-        screen?.updateState(state: .reloadData)
-    }
- 
 }

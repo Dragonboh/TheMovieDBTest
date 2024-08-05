@@ -11,7 +11,13 @@ protocol SortByQuery {
     var queryValue: String { get }
 }
 
-final class MoviesService {
+protocol MoviesProvidable {
+    func fetchMovies(page: Int, sortBy: SortByQuery?, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) 
+    func fetchMovieDetailsAppendVideos(movieId: Int, complition: @escaping (Result<MovieDetails, CustomError>) -> Void)
+    func searchMovieByTitle(_ title: String, page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void)
+}
+
+final class MoviesService: MoviesProvidable {
     
     private let authorizationToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
     
@@ -19,11 +25,11 @@ final class MoviesService {
     var searchCounter = 0
     
     func fetchMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        let url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
-//        if counter > 2 {
-//            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
-//        }
-//        counter += 1
+        var url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
+        if counter > 0 {
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
+        }
+        counter += 1
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
           URLQueryItem(name: "include_adult", value: "false"),
@@ -47,7 +53,7 @@ final class MoviesService {
                 if NetworkMonitor.shared.isConnected {
                     complition(.failure(.error("Error in getting popular movies, error: \(error.localizedDescription)")))
                 } else {
-                    complition(.failure(.error("You are offline. Please, enable your Wi-Fi or connect using cellular data")))
+                    complition(.failure(.noInternetConnection))
                 }
                 
                 return
@@ -104,7 +110,7 @@ final class MoviesService {
                 if NetworkMonitor.shared.isConnected {
                     complition(.failure(.error("Error in getting popular movies, error: \(error.localizedDescription)")))
                 } else {
-                    complition(.failure(.error("You are offline. Please, enable your Wi-Fi or connect using cellular data")))
+                    complition(.failure(.noInternetConnection))
                 }
                 return
             }
@@ -133,7 +139,11 @@ final class MoviesService {
     }
     
     func searchMovieByTitle(_ title: String, page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        let url = URL(string: "https://api.themoviedb.org/3/search/movie")!
+        var url = URL(string: "https://api.themoviedb.org/3/search/movie")!
+        if searchCounter > 1 {
+            url = URL(string: "ttps://api.themoviedb.org/3/search/movie1212312312")!
+        }
+        searchCounter += 1
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "query", value: "\(title)"),
@@ -157,7 +167,7 @@ final class MoviesService {
                 if NetworkMonitor.shared.isConnected {
                     complition(.failure(.error("Error in searching movie, error: \(error.localizedDescription)")))
                 } else {
-                    complition(.failure(.error("You are offline. Please, enable your Wi-Fi or connect using cellular data")))
+                    complition(.failure(.noInternetConnection))
                 }
                 
                 return

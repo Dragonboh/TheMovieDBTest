@@ -18,17 +18,28 @@ class YouTubeVideoPlayerViewController: UIViewController {
         return hud
     }()
     
-    var videoId: String?
+    var videoId: String
+    
+    init?(coder: NSCoder, videoId: String) {
+        self.videoId = videoId
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("use init?(coder: NSCoder, viewModel: MoviesListViewModel) instead")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let videoId = videoId else {
-            assertionFailure("VideoId is bad cunfigured")
-            return
-        }
         progressHUD.show(in: view)
         playerView.load(withVideoId: videoId)
         playerView.delegate = self
+        
+        if let sheet = self.sheetPresentationController {
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.large(), .medium()]
+            sheet.selectedDetentIdentifier = .medium
+        }
     }
 }
 

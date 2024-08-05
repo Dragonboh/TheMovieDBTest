@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
+//  PopMoviesViewController.swift
 //  TheMovieDBTest
 //
-//  Created by admin on 28.07.2024.
+//  Created by admin on 04.08.2024.
 //
 
 import UIKit
@@ -14,15 +14,15 @@ enum MovieListState {
     case moreDataLoadingStart
     case moreDataLoadedFinished
     case reloadData
-    case error(String)
+    case error(CustomError)
 }
 
 protocol MovieListScreenProtocol: AnyObject {
     func updateState(state: MovieListState)
 }
 
-class MoviesListViewController: UIViewController, MovieListScreenProtocol {
-
+class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
+    
     @IBOutlet weak var tableView: UITableView!
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -42,13 +42,24 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         return refreshControl
     }()
     
-    var moviesListVM: MoviesListViewModel!
+    // OR we need PopMoviesListViewModelProtocol
+    var moviesListVM: PopMoviesListViewModel
     
     private var lastScrollOffset = 0.0
     private var isPullToRefreshRunning = false
     private var tableViewDragToEnd = false
     private var isFetchingMoreData = false
     private var isSearching = false
+    
+    // Same here we could use PopMoviesListViewModelProtocol
+    init?(coder: NSCoder, viewModel: PopMoviesListViewModel) {
+        self.moviesListVM = viewModel
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("use init?(coder: NSCoder, viewModel: MoviesListViewModel) instead")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,13 +72,12 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
         fetchInitialData()
     }
     
-    
     // MARK: - initial setUp functions
     
     private func setUpTableViewDiffableDataSource() {
         diffableDataSource = UITableViewDiffableDataSource<Int, MovieModel>(tableView: tableView, cellProvider: { tableView, indexPath, movie in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: MoviewCell.identifier, for: indexPath) as? MoviewCell else {
-                assertionFailure("MoviewCell is bad configured in Storyboard with \(MoviewCell.identifier) identifier")
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: PopMovieCell.identifier, for: indexPath) as? PopMovieCell else {
+                assertionFailure("MoviewCell is bad configured in Storyboard with \(PopMovieCell.identifier) identifier")
                 return UITableViewCell()
             }
             
@@ -75,7 +85,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
                 genre.name
             })
             
-            cell.configure(title: movie.title, year: movie.releaseDate, rating: movie.rating, genres: genres, imagePath: movie.backdropPath)
+            cell.configure(title: movie.title, releaseDate: movie.releaseDate, rating: movie.rating, genres: genres, imagePath: movie.posterPath)
             return cell
         })
     }
@@ -87,6 +97,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
     }
     
     private func setUpTableView() {
+        tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = tableRefreshControl
         tableView.backgroundView = .contentEmptyView
@@ -109,17 +120,7 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             }
             
         case .initialDataLoadingFinished:
-            if isPullToRefreshRunning {
-                finishPullToRefreshAnimationIfNeeded()
-            } else {
-                progressHUD.dismiss()
-            }
-            
-            if isSearching {
-                tableView.isHidden = false
-            }
-            
-            updateDiffableDataSource(initialLoad: true)
+            initialDataLoadingFinished()
             
         case .moreDataLoadingStart:
             startInfinitiveScroll()
@@ -128,26 +129,9 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
             updateDiffableDataSource()
             stopInfinitiveScroll()
     
-        case .error(let errorMessage):
-            
-
-            if isPullToRefreshRunning {
-                finishPullToRefreshAnimationIfNeeded()
-            }
-            
-            if tableViewDragToEnd {
-                stopInfinitiveScroll()
-            }
-            
-            if isFetchingMoreData {
-                isFetchingMoreData = false
-                break
-            }
-            
-            showAlertError(message: errorMessage)
-            progressHUD.dismiss()
-            tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? .failedToLoad : .none)
-            
+        case .error(let error):
+            handleError(errorMessage: error.errorMessage)
+           
             
         case .reloadData:
             updateDiffableDataSource()
@@ -178,12 +162,51 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
     
     @objc
     private func pullToRefresh() {
-        if isSearching {
-            return
-        }
         print("DEBUG: pullToRefresh")
         isPullToRefreshRunning = true
-        fetchInitialData()
+        
+        if isSearching {
+            searchBarSearchButtonClicked(searchController.searchBar)
+        } else {
+            fetchInitialData()
+        }
+    }
+    
+    private func initialDataLoadingFinished() {
+        if isPullToRefreshRunning {
+            finishPullToRefreshAnimationIfNeeded()
+        } else {
+            progressHUD.dismiss()
+        }
+        
+        if isSearching {
+            tableView.isHidden = false
+        }
+        
+        updateDiffableDataSource(initialLoad: true)
+    }
+    
+    private func handleError(errorMessage: String) {
+        if isPullToRefreshRunning {
+            finishPullToRefreshAnimationIfNeeded()
+        }
+        
+        if tableViewDragToEnd {
+            stopInfinitiveScroll()
+            showAlertError(message: errorMessage)
+            isFetchingMoreData = false
+            return
+        }
+        
+        if isFetchingMoreData {
+            isFetchingMoreData = false
+            return
+        }
+        
+        showAlertError(message: errorMessage)
+        progressHUD.dismiss()
+        tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? .failedToLoad : .none)
+//        tableView.isHidden = false
     }
     
     private func finishPullToRefreshAnimationIfNeeded() {
@@ -233,19 +256,28 @@ class MoviesListViewController: UIViewController, MovieListScreenProtocol {
 
 // MARK: - UITableViewDelegate
 
-extension MoviesListViewController: UITableViewDelegate {
+extension PopMoviesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         moviesListVM.didSelectRowAt(indexPath)
         tableView.deselectRow(at: indexPath, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        print("Will DIsplay: ", indexPath.row)
+    }
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        print("scroll: willDisplayFooterView")
     }
 }
 
 // MARK: - UIScrollViewDelegate
 
-extension MoviesListViewController: UIScrollViewDelegate {
+// TODO: need fix dont work when very fast scrollling
+
+extension PopMoviesViewController: UIScrollViewDelegate {
     private func offset(_ scrollView: UIScrollView) -> Double {
         let offset = scrollView.contentOffset.y
-        let contentHeight = Double(diffableDataSource.numberOfItems * 240)
+        let contentHeight = tableView.contentSize.height
         let onScreen = scrollView.frame.size.height
         let counter = contentHeight - offset - onScreen
         
@@ -253,26 +285,26 @@ extension MoviesListViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if isFetchingMoreData {
+        if isFetchingMoreData || diffableDataSource.isEmpty {
             return
         }
         
         let offset = offset(scrollView)
         print(offset)
-        if (offset < lastScrollOffset) && (offset < 2400) && (offset > -11) {
+        if (offset < lastScrollOffset) && (offset < 3000) && (offset > 0) {
             isFetchingMoreData = true
             fetchMoreData(endDragging: false)
+            lastScrollOffset = offset
         }
-        lastScrollOffset = offset
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if isFetchingMoreData {
+        if isFetchingMoreData || diffableDataSource.isEmpty {
             return
         }
 
         let offset = offset(scrollView)
-        if offset < -11.0 && diffableDataSource.isEmpty {
+        if offset < 0 {
             isFetchingMoreData = true
             fetchMoreData(endDragging: true)
         }
@@ -281,7 +313,7 @@ extension MoviesListViewController: UIScrollViewDelegate {
 
 // MARK: - UISearchBarDelegate, UISearchControllerDelegate
 
-extension MoviesListViewController: UISearchControllerDelegate, UISearchBarDelegate {
+extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelegate {
     
     func willPresentSearchController(_ searchController: UISearchController) {
         tableView.isHidden = true
@@ -295,7 +327,7 @@ extension MoviesListViewController: UISearchControllerDelegate, UISearchBarDeleg
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        print("searchBarCancelButtonClicked")
+        print("DEBUG: searchBarCancelButtonClicked")
         isSearching = false
         tableView.isHidden = false
         moviesListVM.searchBarCancelButtonClicked()
@@ -304,7 +336,7 @@ extension MoviesListViewController: UISearchControllerDelegate, UISearchBarDeleg
 
 //MARK: - @IBActions
 
-extension MoviesListViewController {
+extension PopMoviesViewController {
     @IBAction func showSortOptionsActionSheet(_ sender: Any) {
         let actionSheet = UIAlertController(title: "Select an Option", message: nil, preferredStyle: .actionSheet)
         

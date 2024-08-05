@@ -22,7 +22,7 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
     
     @IBOutlet weak var tableView: UITableView!
     
-    var movieDetailsVM: MovieDetailsViewModel!
+    var movieDetailsVM: MovieDetailsViewModel
     
     lazy var progressHUD: JGProgressHUD = {
         let hud = JGProgressHUD()
@@ -31,6 +31,15 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
         return hud
     }()
     
+    init?(coder: NSCoder, viewModel: MovieDetailsViewModel) {
+        self.movieDetailsVM = viewModel
+        super.init(coder: coder)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("use init?(coder: NSCoder, viewModel: MoviesListViewModel) instead")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,7 +47,6 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
         tableView.dataSource = self
         tableView.isHidden = true
 
-        
         fetchData()
     }
     
@@ -89,7 +97,7 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
                 return UITableViewCell()
             }
             
-            cell.configure(imagePath: movieDetails.posterPath)
+            cell.configure(imagePath: movieDetails.backdropPath)
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieParametersCell", for: indexPath) as? MovieParametersCell else {
@@ -100,7 +108,7 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
             let genres = movieDetails.genres?.map({ genre in
                 genre.name
             })
-            cell.configure(title: movieDetails.title, country: movieDetails.country, year: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating, isTrailerEnable: !movieDetailsVM.videoKey.isEmpty)
+            cell.configure(title: movieDetails.title, originalTitle: movieDetails.originalTitle, country: movieDetails.country, releaseDate: movieDetails.releaseDate, genres: genres, rating: movieDetails.rating, isTrailerEnable: !movieDetailsVM.videoKey.isEmpty)
             cell.playTrailerAction = { [weak self] in
                 self?.movieDetailsVM.playTrailer()
             }
@@ -120,6 +128,7 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        movieDetailsVM.didSelectRowAt(indexPath)
+//        movieDetailsVM.didSelectRowAt(indexPath)
+        tableView.deselectRow(at: indexPath, animated: false)
     }
 }

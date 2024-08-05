@@ -19,6 +19,7 @@ struct MovieModel: Codable, Hashable, Identifiable {
     let rating: Double?
     let genres: [AllGenre]?
     let popularity: Double?
+    let posterPath: String?
     
     enum CodingKeys: String, CodingKey {
         case id, popularity
@@ -27,6 +28,7 @@ struct MovieModel: Codable, Hashable, Identifiable {
         case releaseDate = "release_date"
         case rating = "vote_average"
         case genres = "genre_ids"
+        case posterPath = "poster_path"
     }
 }
 

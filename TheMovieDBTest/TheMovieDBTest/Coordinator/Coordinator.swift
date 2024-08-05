@@ -6,40 +6,61 @@
 //
 
 import UIKit
+import OSLog
 
 class Coordinator {
     
-    weak var navigationVC: UINavigationController?
+    weak var rootViewController: UINavigationController?
+    private let storyboard = UIStoryboard(name: "Main", bundle: nil)
     
     func initialViewController() -> UIViewController? {
-        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MoviesListViewController")
-        guard let popularMoviesVC = viewController as? MoviesListViewController else {
-            assertionFailure("MoviesListViewController is bad configured in Main storyboard")
-            return nil
+        let vc = createPopMoviesListViewController()
+        
+        let nav = UINavigationController(rootViewController: vc)
+        rootViewController = nav
+        return nav
+    }
+
+    private func goToMovieDetailsScreen(movieId: Int) {
+        let vc = createMovieDetailsViewController(movieId: movieId)
+        
+        rootViewController?.pushViewController(vc, animated: true)
+    }
+    
+    private func playTrailer(trailerId: String) {
+        let vc = createTrailerViewController(videoId: trailerId)
+        
+        rootViewController?.present(vc, animated: true)
+    }
+    
+    private func goToPosterScrolLView(imagePath: String) {
+        
+        guard let posterViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PosterViewController") as? PosterViewController else {
+            assertionFailure("PosterViewController is bad configured in Main storyboard")
+            return
         }
-        let viewModel = MoviesListViewModel(moviesService: MoviesService(), router: self)
+    }
+}
+
+private extension Coordinator {
+    private func createPopMoviesListViewController() -> PopMoviesViewController {
+        let viewModel = PopMoviesListViewModel(moviesService: MoviesService(), router: self)
         viewModel.goToMovieDetailsScreen = {[weak self] movieId in
             self?.goToMovieDetailsScreen(movieId: movieId)
         }
         
-        popularMoviesVC.moviesListVM = viewModel
+        let popularMoviesVC = storyboard.instantiateViewController(identifier: String(describing: PopMoviesViewController.self)) { coder in
+            PopMoviesViewController(coder: coder, viewModel: viewModel)
+        }
+            
         viewModel.screen = popularMoviesVC
         
-        let nav = UINavigationController(rootViewController: popularMoviesVC)
-        navigationVC = nav
-        
-        return nav
+        return popularMoviesVC
     }
     
-    private func goToMovieDetailsScreen(movieId: Int) {
-        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MoviewDetailsViewController")
-        guard let movieDetailsVC = viewController as? MoviewDetailsViewController else {
-            assertionFailure("MoviewDetailsViewController is bad configured in Main storyboard")
-            return
-        }
-        let viewModel = MovieDetailsViewModel(screen: movieDetailsVC, moviesService: MoviesService(), movieId: movieId)
-        movieDetailsVC.movieDetailsVM = viewModel
+    private func createMovieDetailsViewController(movieId: Int) -> MoviewDetailsViewController {
         
+        let viewModel = MovieDetailsViewModel(moviesService: MoviesService(), movieId: movieId)
         viewModel.goToPosterScrollView = { [weak self] imagePath in
             self?.goToPosterScrolLView(imagePath: imagePath)
         }
@@ -47,36 +68,22 @@ class Coordinator {
         viewModel.goToTrailer = { [weak self] trailerId in
             self?.playTrailer(trailerId: trailerId)
         }
+
+        let moviewDetailsVC = storyboard.instantiateViewController(identifier: String(describing: MoviewDetailsViewController.self)) { coder in
+            MoviewDetailsViewController(coder: coder, viewModel: viewModel)
+        }
         
-        navigationVC?.pushViewController(movieDetailsVC, animated: true)
+        viewModel.screen = moviewDetailsVC
+        
+        return moviewDetailsVC
     }
     
-    private func goToPosterScrolLView(imagePath: String) {
-        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PosterViewController")
-        guard let posterViewController = viewController as? PosterViewController else {
-            assertionFailure("PosterViewController is bad configured in Main storyboard")
-            return
+    private func createTrailerViewController(videoId: String) -> YouTubeVideoPlayerViewController {
+        let trailerVC = storyboard.instantiateViewController(identifier: String(describing: YouTubeVideoPlayerViewController.self)) { coder in
+            YouTubeVideoPlayerViewController(coder: coder, videoId: "")
         }
-        posterViewController.imagePath = imagePath
-        let navController = UINavigationController(rootViewController: posterViewController)
-        navigationVC?.present(navController, animated: true)
-    }
-    
-    private func playTrailer(trailerId: String) {
-        
-        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "YouTubeVideoPlayerViewController")
-        guard let videoPlayerVC = viewController as? YouTubeVideoPlayerViewController else {
-            assertionFailure("YouTubeVideoPlayerViewController is bad configured in Main storyboard")
-            return
-        }
-        videoPlayerVC.videoId = trailerId
-        
-        if let sheet = videoPlayerVC.sheetPresentationController {
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.large(), .medium()]
-            sheet.selectedDetentIdentifier = .medium
-        }
-        
-        navigationVC?.present(videoPlayerVC, animated: true)
+         
+        return trailerVC
     }
 }
+
