@@ -43,7 +43,6 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     func fetchInitialData() {
         screen?.updateState(state: .initialDataLoadingStart)
         initialLoading = true
-        initialTotalPages = 0
         fetchData()
     }
     
@@ -80,6 +79,8 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
         screen?.updateState(state: .reloadData)
     }
     
+//    func pullToRefresh()
+    
 //    func updateSearchResults() {
 //        filteredMovies = []
 //        screen?.updateState(state: .reloadData)
@@ -105,25 +106,20 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
 //    }
     
     private func fetchData() {
-        let page = initialTotalPages + 1
+        let page = getPage() + 1
         moviesService.fetchMovies(page: page, sortBy: currentSortOption) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let moviesArray):
                     self.initialTotalPages = page
-                    
-                    if self.initialLoading {
-                        self.initialMovies = moviesArray
-                        self.filteredMovies = moviesArray
-                        self.screen?.updateState(state: .initialDataLoadingFinished)
-                    } else {
-                        self.initialMovies.append(contentsOf: moviesArray)
-                        self.filteredMovies.append(contentsOf: moviesArray)
-                        self.screen?.updateState(state: .moreDataLoadedFinished)
-                    }
+                    self.initialDataLoadSuccess(moviesArray)
                 case .failure(let error):
-                    self.screen?.updateState(state: .error(error))
+                    if self.initialLoading {
+                        self.screen?.updateState(state: .initialDataLoadingFailed(error))
+                    } else {
+                        self.screen?.updateState(state: .moreDataLoadingFailed(error))
+                    }
                 }
             }
         }
@@ -141,7 +137,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
                     if self.initialLoading {
                         self.screen?.updateState(state: .initialDataLoadingFinished)
                     } else {
-                        self.screen?.updateState(state: .moreDataLoadedFinished)
+                        self.screen?.updateState(state: .moreDataLoadingFinished)
                     }
                 case .failure(let error):
                     print("DEBUG: error in searching data for title \(self.searchQuery), error: \(error.errorMessage)")
@@ -163,5 +159,25 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
         filteredMovies = initialMovies.filter({ movie in
             movie.title?.lowercased().contains(title.lowercased()) ?? false
         })
+    }
+    
+    private func getPage() -> Int {
+        if initialLoading {
+            return 0
+        } else {
+            return initialTotalPages
+        }
+    }
+    
+    private func initialDataLoadSuccess(_ movies: [MovieModel]) {
+        if initialLoading {
+            initialMovies = movies
+            filteredMovies = movies
+            screen?.updateState(state: .initialDataLoadingFinished)
+        } else {
+            initialMovies.append(contentsOf: movies)
+            filteredMovies.append(contentsOf: movies)
+            screen?.updateState(state: .moreDataLoadingFinished)
+        }
     }
 }

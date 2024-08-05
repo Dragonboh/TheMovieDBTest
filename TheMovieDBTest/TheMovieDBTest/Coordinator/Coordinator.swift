@@ -15,7 +15,6 @@ class Coordinator {
     
     func initialViewController() -> UIViewController? {
         let vc = createPopMoviesListViewController()
-        
         let nav = UINavigationController(rootViewController: vc)
         rootViewController = nav
         return nav
@@ -23,22 +22,17 @@ class Coordinator {
 
     private func goToMovieDetailsScreen(movieId: Int) {
         let vc = createMovieDetailsViewController(movieId: movieId)
-        
         rootViewController?.pushViewController(vc, animated: true)
     }
     
     private func playTrailer(trailerId: String) {
         let vc = createTrailerViewController(videoId: trailerId)
-        
         rootViewController?.present(vc, animated: true)
     }
     
     private func goToPosterScrolLView(imagePath: String) {
-        
-        guard let posterViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PosterViewController") as? PosterViewController else {
-            assertionFailure("PosterViewController is bad configured in Main storyboard")
-            return
-        }
+        let navController = UINavigationController(rootViewController: PosterViewController(imagePath: imagePath))
+        rootViewController?.present(navController, animated: true)
     }
 }
 

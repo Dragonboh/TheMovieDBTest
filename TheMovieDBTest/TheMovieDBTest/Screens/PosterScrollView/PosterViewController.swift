@@ -1,175 +1,169 @@
 //
-//  PosterViewController.swift
+//  Poster.swift
 //  TheMovieDBTest
 //
-//  Created by admin on 01.08.2024.
+//  Created by admin on 06.08.2024.
 //
-
 import UIKit
-import JGProgressHUD
-import Kingfisher
 
-class PosterViewController: UIViewController {
+class PosterViewController: UIViewController, UIScrollViewDelegate {
     
-    @IBOutlet weak var posterImageView: UIImageView!
+    private var scrollView: UIScrollView!
+    private var imageView: UIImageView!
+    private var imageViewBottomConstraint: NSLayoutConstraint!
+    private var imageViewLeadingConstraint: NSLayoutConstraint!
+    private var imageViewTopConstraint: NSLayoutConstraint!
+    private var imageViewTrailingConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var scrollView: UIScrollView!
+    // can be .scaleAspectFill or .scaleAspectFit
+    private var fitMode: UIView.ContentMode = .scaleAspectFit
     
-    @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
+    // if fitMode is .scaleAspectFit, allowFullImage is ignored
+    // if fitMode is .scaleAspectFill, image will start zoomed to .scaleAspectFill
+    //  if allowFullImage is false, image will zoom back to .scaleAspectFill if "pinched in"
+    //  if allowFullImage is true, image can be "pinched in" to see the full image
+    private var allowFullImage: Bool = true
+    private let imagePath: String
     
-    @IBOutlet weak var imageViewLeadingConstraint: NSLayoutConstraint!
+    init(imagePath: String) {
+        self.imagePath = imagePath
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var imageViewTrailingConstraint: NSLayoutConstraint!
-    
-    weak var topConstraint: NSLayoutConstraint?
-    weak var bottomConstraint: NSLayoutConstraint?
-    weak var leftConstraint: NSLayoutConstraint?
-    weak var rightConstraint: NSLayoutConstraint?
-    
-    lazy var progressHUD: JGProgressHUD = {
-        let hud = JGProgressHUD()
-        hud.textLabel.text = "Loading"
-        hud.detailTextLabel.text = "Please wait"
-        return hud
-    }()
-    
-    weak var testImageView: UIImageView?
-    var imagePath: String?
+    required init?(coder: NSCoder) {
+        fatalError("use init?(coder: NSCoder, viewModel: MoviesListViewModel) instead")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        scrollView.delegate = self
-       
+        
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w1280\(imagePath)") else { return }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeSheet))
         
         if let sheet = navigationController?.sheetPresentationController {
             sheet.prefersGrabberVisible = true
         }
         
-        let image = UIImageView(frame: .zero)
-        testImageView = image
-//        guard let testImageView = testImageView else { return }
-        scrollView.addSubview(testImageView!)
+        scrollView = UIScrollView()
+        imageView = UIImageView()
         
-        testImageView!.translatesAutoresizingMaskIntoConstraints = false
-        let topConstraint = testImageView!.topAnchor.constraint(equalTo: scrollView.topAnchor)
-        let bottomConstraint = testImageView!.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-        let leftConstraint = testImageView!.leftAnchor.constraint(equalTo: scrollView.leftAnchor)
-        let rightConstraint = testImageView!.rightAnchor.constraint(equalTo: scrollView.rightAnchor)
-        NSLayoutConstraint.activate([topConstraint, bottomConstraint, leftConstraint, rightConstraint])
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        loadImage()
+        imageView.contentMode = .scaleToFill
+        
+        scrollView.addSubview(imageView)
+        view.addSubview(scrollView)
+        view.backgroundColor = .systemBackground
+        scrollView.backgroundColor = .gray
+        // respect safe area
+        let g = view.safeAreaLayoutGuide
+        
+        imageViewTopConstraint = imageView.topAnchor.constraint(equalTo: scrollView.topAnchor)
+        imageViewBottomConstraint = imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+        imageViewLeadingConstraint = imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor)
+        imageViewTrailingConstraint = imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor)
+
+        NSLayoutConstraint.activate([
+            
+            scrollView.topAnchor.constraint(equalTo: g.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: g.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: g.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: g.trailingAnchor),
+
+            imageViewTopConstraint,
+            imageViewBottomConstraint,
+            imageViewLeadingConstraint,
+            imageViewTrailingConstraint,
+            
+        ])
+        
+        scrollView.delegate = self
+        scrollView.minimumZoomScale = 0.1
+        scrollView.maximumZoomScale = 5.0
+        
+        imageView.kf.setImage(with: url)
+        
     }
-    
+
     @objc
     private func closeSheet() {
         dismiss(animated: true)
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        updateMinZoomScaleForSize(view.bounds.size)
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.updateMinZoomScaleForSize(size, shouldSize: (self.scrollView.zoomScale == self.scrollView.minimumZoomScale))
+            self.updateConstraintsForSize(size)
+        }, completion: {
+            _ in
+            print("transition")
+        })
     }
-
     
-//    private func updateMinZoomScaleForSize(_ size: CGSize) {
-//        let widthScale = size.width / posterImageView.bounds.width
-//        let heightScale = size.height / posterImageView.bounds.height
-//        let minScale = min(widthScale, heightScale)
-//        
-//        scrollView.minimumZoomScale = minScale
-//        scrollView.zoomScale = minScale
-//        scrollView.maximumZoomScale = 1
-//    }
-    
-    private func updateMinZoomScaleForSize(_ size: CGSize) {
-        let widthScale = size.width / testImageView!.bounds.width
-        let heightScale = size.height / testImageView!.bounds.height
-        let minScale = min(widthScale, heightScale)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateMinZoomScaleForSize(scrollView.bounds.size)
+        updateConstraintsForSize(scrollView.bounds.size)
         
-        scrollView.minimumZoomScale = minScale
-        scrollView.zoomScale = minScale
-        scrollView.maximumZoomScale = 1
+        if fitMode == .scaleAspectFill {
+            centerImageView()
+        }
+        
     }
     
-    private func loadImage() {
-//        guard let urlImagePath = imagePath, let url = URL(string: "https://image.tmdb.org/t/p/original\(urlImagePath)") else {
-//            return
-//        }
-
-//        posterImageView.load(url: url)
-        guard let urlImagePath = imagePath else { return }
-        let url = URL(string: "https://image.tmdb.org/t/p/original\(urlImagePath)")
-        testImageView!.kf.setImage(with: url)
-    }
-}
-
-extension PosterViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return testImageView
+    func updateMinZoomScaleForSize(_ size: CGSize, shouldSize: Bool = true) {
+        guard let img = imageView.image else {
+            return
+        }
+        
+        var bShouldSize = shouldSize
+        
+        let widthScale = size.width / img.size.width
+        let heightScale = size.height / img.size.height
+        
+        var minScale = min(widthScale, heightScale)
+        let startScale = max(widthScale, heightScale)
+        
+        if fitMode == .scaleAspectFill && !allowFullImage {
+            minScale = startScale
+        }
+        if scrollView.zoomScale < minScale {
+            bShouldSize = true
+        }
+        scrollView.minimumZoomScale = minScale
+        if bShouldSize {
+            scrollView.zoomScale = fitMode == .scaleAspectFill ? startScale : minScale
+        }
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateConstraintsForSize(scrollView.bounds.size)
     }
     
+    func centerImageView() -> Void {
+        let yOffset = (scrollView.frame.size.height - imageView.frame.size.height) / 2
+        let xOffset = (scrollView.frame.size.width - imageView.frame.size.width) / 2
+        scrollView.contentOffset = CGPoint(x: -xOffset, y: -yOffset)
+    }
+    
     func updateConstraintsForSize(_ size: CGSize) {
-        let yOffset = max(0, (size.height - posterImageView.frame.height) / 2)
-
-        topConstraint!.constant = yOffset
-        bottomConstraint!.constant = yOffset
-
-        let xOffset = max(0, (size.width - posterImageView.frame.width) / 2)
-        rightConstraint!.constant = xOffset
-        leftConstraint!.constant = xOffset
-
+        let yOffset = max(0, (size.height - imageView.frame.height) / 2)
+        imageViewTopConstraint.constant = yOffset
+        imageViewBottomConstraint.constant = yOffset
+        
+        let xOffset = max(0, (size.width - imageView.frame.width) / 2)
+        imageViewLeadingConstraint.constant = xOffset
+        imageViewTrailingConstraint.constant = xOffset
+        
         view.layoutIfNeeded()
     }
     
-//    func updateConstraintsForSize(_ size: CGSize) {
-//        let yOffset = max(0, (size.height - posterImageView.frame.height) / 2)
-//       
-////        if let navHeihght = navigationController?.navigationBar.frame.height {
-////            imageViewTopConstraint.constant = yOffset - navHeihght
-////        } else {
-////            imageViewTopConstraint.constant = yOffset
-////        }
-////
-//        imageViewTopConstraint.constant = yOffset
-//        imageViewBottomConstraint.constant = yOffset
-//        
-//        let xOffset = max(0, (size.width - posterImageView.frame.width) / 2)
-//        imageViewLeadingConstraint.constant = xOffset	
-//        imageViewTrailingConstraint.constant = xOffset
-//        
-//        view.layoutIfNeeded()
-//    }
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
     
-//    func updateConstraintsForSize(_ size: CGSize) {
-//        let yOffset = max(0, (scrollView.frame.size.height - posterImageView.frame.height) / 2)
-//        imageViewTopConstraint.constant = yOffset
-//        imageViewBottomConstraint.constant = yOffset
-//        
-//        let xOffset = max(0, (scrollView.frame.size.width - posterImageView.frame.width) / 2)
-//        imageViewLeadingConstraint.constant = xOffset
-//        imageViewTrailingConstraint.constant = xOffset
-//        
-//        view.layoutIfNeeded()
-//    }
 }
-
-//private extension UIImageView {
-//    func load(url: URL) {
-//        DispatchQueue.global().async { [weak self] in
-//            if let data = try? Data(contentsOf: url) {
-//                if let image = UIImage(data: data) {
-//                    DispatchQueue.main.async {
-//                        self?.image = image
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}

@@ -26,7 +26,11 @@ final class MoviesService: MoviesProvidable {
     
     func fetchMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
         var url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
-        if counter > 0 {
+        if counter < 11 && counter > 0 {
+            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
+        }
+        
+        if counter > 12 {
             url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
         }
         counter += 1
@@ -140,7 +144,7 @@ final class MoviesService: MoviesProvidable {
     
     func searchMovieByTitle(_ title: String, page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
         var url = URL(string: "https://api.themoviedb.org/3/search/movie")!
-        if searchCounter > 1 {
+        if searchCounter == 0 {
             url = URL(string: "ttps://api.themoviedb.org/3/search/movie1212312312")!
         }
         searchCounter += 1

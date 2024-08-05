@@ -24,7 +24,7 @@ class MoviewDetailsViewController: UIViewController, MoviewDetailsScreenProtocol
     
     var movieDetailsVM: MovieDetailsViewModel
     
-    lazy var progressHUD: JGProgressHUD = {
+    var progressHUD: JGProgressHUD = {
         let hud = JGProgressHUD()
         hud.textLabel.text = "Loading"
         hud.detailTextLabel.text = "Please wait"
@@ -128,7 +128,7 @@ extension MoviewDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        movieDetailsVM.didSelectRowAt(indexPath)
+        movieDetailsVM.didSelectRowAt(indexPath)
         tableView.deselectRow(at: indexPath, animated: false)
     }
 }
