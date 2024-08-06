@@ -123,7 +123,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     }
     
     private func setUpNavigationBar() {
-        title = "Popular Movies".lowercased()
+        navigationItem.title = "Popular Movies".localized()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -351,7 +351,7 @@ extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelega
 
 extension PopMoviesViewController {
     @IBAction func showSortOptionsActionSheet(_ sender: Any) {
-        let actionSheet = UIAlertController(title: "Select an Option".lowercased(), message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Select an Option".localized(), message: nil, preferredStyle: .actionSheet)
         
         // Add actions to the action sheet
         let popularityOption = UIAlertAction(title: SortOption.popularity.title.localized(), style: .default) { [weak self] _ in
@@ -375,7 +375,7 @@ extension PopMoviesViewController {
             ratingOption.setValue(true, forKey: "checked")
         }
         
-        let cancelAction = UIAlertAction(title: "Dismiss".lowercased(), style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "Dismiss".localized(), style: .cancel, handler: nil)
         
         actionSheet.addAction(popularityOption)
         actionSheet.addAction(ratingOption)

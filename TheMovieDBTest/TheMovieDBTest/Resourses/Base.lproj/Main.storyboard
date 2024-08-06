@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lPw-9s-954">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PopMovieCell" rowHeight="246" id="mYk-Zj-jju" customClass="PopMovieCell" customModule="TheMovieDBTest" customModuleProvider="target">
@@ -99,15 +99,6 @@
                                             <outlet property="titleLabel" destination="EzH-NA-v1b" id="drA-S5-oU2"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LoadMoreDataCell" rowHeight="100" id="quX-IC-MtX" customClass="LoadMoreDataCell" customModule="TheMovieDBTest" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="296" width="393" height="100"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="quX-IC-MtX" id="18t-Qt-NfF">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" systemColor="systemIndigoColor"/>
-                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>
@@ -120,13 +111,20 @@
                             <constraint firstItem="Jwl-IL-cCy" firstAttribute="bottom" secondItem="lPw-9s-954" secondAttribute="bottom" id="lqk-iO-8cg"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="piC-LR-YWc">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="arrow.up.and.down.text.horizontal" catalog="system" id="3Yr-Rj-lgE">
+                            <connections>
+                                <action selector="showSortOptionsActionSheet:" destination="pf4-qc-2vl" id="e1l-gp-2h3"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="lPw-9s-954" id="stV-N0-LXJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aQg-gc-7bh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="883" y="13"/>
+            <point key="canvasLocation" x="1808.3969465648854" y="12.67605633802817"/>
         </scene>
         <!--Moview Details View Controller-->
         <scene sceneID="Jvb-pF-AWX">
@@ -300,7 +298,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9XE-NS-DUr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1640" y="13"/>
+            <point key="canvasLocation" x="2565.6488549618321" y="12.67605633802817"/>
         </scene>
         <!--You Tube Video Player View Controller-->
         <scene sceneID="biz-6t-qVZ">
@@ -332,19 +330,35 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pkI-t3-PzS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2463" y="13"/>
+            <point key="canvasLocation" x="3388.5496183206105" y="12.67605633802817"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8L0-ks-JQk">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="J4B-tN-h0V" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Cjy-GR-O6h">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="pf4-qc-2vl" kind="relationship" relationship="rootViewController" id="7Cf-yZ-jqi"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d93-pD-vOf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="881.67938931297704" y="12.67605633802817"/>
         </scene>
     </scenes>
     <resources>
+        <image name="arrow.up.and.down.text.horizontal" catalog="system" width="128" height="87"/>
         <image name="photo" catalog="system" width="128" height="93"/>
         <image name="photo.fill" catalog="system" width="128" height="93"/>
         <image name="play.square.fill" catalog="system" width="128" height="114"/>
         <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemIndigoColor">
-            <color red="0.34509803919999998" green="0.33725490200000002" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

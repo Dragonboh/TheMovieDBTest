@@ -9,6 +9,9 @@
 "Movies List" = "Список фільмів";
 "Loading" = "Загрузка";
 "Please wait" = "Зачекайте";
-"By popularity (default)" = "За популярністю (за замовчуванню)";
+"By popularity (default)" = "За популярністю (за замовчуванням)";
 "By title" = "За назвою";
 "By rating" = "За рейтингом";
+"Popular Movies" = "Популярні фільми";
+"Dismiss" = "Відмінити";
+"Select an Option" = "Виберіть сортування";
