@@ -20,6 +20,8 @@
 		8404C64E2C6160BB00F71099 /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C64D2C6160BB00F71099 /* TableFooterView.swift */; };
 		8404C6502C6197E000F71099 /* PosterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C64F2C6197E000F71099 /* PosterViewController.swift */; };
 		8404C6522C61BA8600F71099 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6512C61BA8600F71099 /* TableHeaderView.swift */; };
+		8404C6592C61CAF900F71099 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8404C6572C61CAF900F71099 /* Localizable.strings */; };
+		8404C65C2C61CD4200F71099 /* Strinng + Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C65B2C61CD4200F71099 /* Strinng + Extentions.swift */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
 		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
@@ -54,6 +56,11 @@
 		8404C64D2C6160BB00F71099 /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
 		8404C64F2C6197E000F71099 /* PosterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
 		8404C6512C61BA8600F71099 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
+		8404C6552C61C9B800F71099 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		8404C6562C61C9B900F71099 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Main.strings; sourceTree = "<group>"; };
+		8404C6582C61CAF900F71099 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8404C65A2C61CB3600F71099 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8404C65B2C61CD4200F71099 /* Strinng + Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strinng + Extentions.swift"; sourceTree = "<group>"; };
 		843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviewDetails.swift; sourceTree = "<group>"; };
 		843C61DE2C5A78D10062C8FB /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
@@ -152,6 +159,7 @@
 			children = (
 				8404C6392C5EFD5900F71099 /* DiffableDataSource + Extentions.swift */,
 				8404C6362C5E881500F71099 /* UITableView + Background.swift */,
+				8404C65B2C61CD4200F71099 /* Strinng + Extentions.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -187,6 +195,7 @@
 		8479FC932C56A3AE00E36F3F = {
 			isa = PBXGroup;
 			children = (
+				8404C6572C61CAF900F71099 /* Localizable.strings */,
 				8479FC9E2C56A3AE00E36F3F /* TheMovieDBTest */,
 				8479FC9D2C56A3AE00E36F3F /* Products */,
 			);
@@ -312,6 +321,7 @@
 			knownRegions = (
 				en,
 				Base,
+				uk,
 			);
 			mainGroup = 8479FC932C56A3AE00E36F3F;
 			packageReferences = (
@@ -335,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8479FCA92C56A3B000E36F3F /* Assets.xcassets in Resources */,
+				8404C6592C61CAF900F71099 /* Localizable.strings in Resources */,
 				8479FCAC2C56A3B000E36F3F /* Base in Resources */,
 				8479FCA72C56A3AE00E36F3F /* Base in Resources */,
 			);
@@ -372,6 +383,7 @@
 				843F81B32C5A4681009BAF89 /* MoviePosterCell.swift in Sources */,
 				8404C62F2C5CE7E000F71099 /* NetworkMonitor.swift in Sources */,
 				843F81B52C5A46DC009BAF89 /* MovieDescriptionCell.swift in Sources */,
+				8404C65C2C61CD4200F71099 /* Strinng + Extentions.swift in Sources */,
 				843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,10 +391,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		8404C6572C61CAF900F71099 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8404C6582C61CAF900F71099 /* en */,
+				8404C65A2C61CB3600F71099 /* uk */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		8479FCA52C56A3AE00E36F3F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				8479FCA62C56A3AE00E36F3F /* Base */,
+				8404C6562C61C9B900F71099 /* uk */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -391,6 +413,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				8479FCAB2C56A3B000E36F3F /* Base */,
+				8404C6552C61C9B800F71099 /* uk */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -403,6 +426,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -450,7 +474,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -466,6 +490,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -507,7 +532,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

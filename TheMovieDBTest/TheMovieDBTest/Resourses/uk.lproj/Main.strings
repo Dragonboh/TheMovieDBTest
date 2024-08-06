@@ -1,0 +1,33 @@
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "1hm-Xx-QQA"; */
+"1hm-Xx-QQA.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "EzH-NA-v1b"; */
+"EzH-NA-v1b.text" = "Label";
+
+/* Class = "UILabel"; text = "Movie Description"; ObjectID = "HrV-IX-6Y1"; */
+"HrV-IX-6Y1.text" = "Movie Description";
+
+/* Class = "UILabel"; text = "Original title"; ObjectID = "Kng-Qt-Man"; */
+"Kng-Qt-Man.text" = "Original title";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "MrS-qT-Flr"; */
+"MrS-qT-Flr.text" = "Label";
+
+/* Class = "UILabel"; text = "8.5"; ObjectID = "P9V-Ra-sKh"; */
+"P9V-Ra-sKh.text" = "8.5";
+
+/* Class = "UILabel"; text = "7.5"; ObjectID = "WBH-Ly-yt9"; */
+"WBH-Ly-yt9.text" = "7.5";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Wmh-fu-NJK"; */
+"Wmh-fu-NJK.text" = "Label";
+
+/* Class = "UILabel"; text = "Genre1, Genre2, Genre3"; ObjectID = "eRH-jc-gjk"; */
+"eRH-jc-gjk.text" = "Genre1, Genre2, Genre3";
+
+/* Class = "UILabel"; text = "Country, Year"; ObjectID = "nek-zd-JsV"; */
+"nek-zd-JsV.text" = "Country, Year";
+
+/* Class = "UILabel"; text = "Movie Name"; ObjectID = "xGG-7R-8H3"; */
+"xGG-7R-8H3.text" = "Movie Name";

@@ -37,8 +37,8 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
 
     private lazy var progressHUD: JGProgressHUD = {
         let hud = JGProgressHUD()
-        hud.textLabel.text = "Loading"
-        hud.detailTextLabel.text = "Please wait"
+        hud.textLabel.text = "Loading".localized()
+        hud.detailTextLabel.text = "Please wait".localized()
         return hud
     }()
     
@@ -123,7 +123,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     }
     
     private func setUpNavigationBar() {
-        title = "Popular Movies"
+        title = "Popular Movies".lowercased()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -351,18 +351,18 @@ extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelega
 
 extension PopMoviesViewController {
     @IBAction func showSortOptionsActionSheet(_ sender: Any) {
-        let actionSheet = UIAlertController(title: "Select an Option", message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Select an Option".lowercased(), message: nil, preferredStyle: .actionSheet)
         
         // Add actions to the action sheet
-        let popularityOption = UIAlertAction(title: SortOption.popularity.title, style: .default) { [weak self] _ in
+        let popularityOption = UIAlertAction(title: SortOption.popularity.title.localized(), style: .default) { [weak self] _ in
             self?.sortMovies(by: .popularity)
         }
         
-        let ratingOption = UIAlertAction(title: SortOption.rating.title, style: .default) { [weak self] _ in
+        let ratingOption = UIAlertAction(title: SortOption.rating.title.localized(), style: .default) { [weak self] _ in
             self?.sortMovies(by: .rating)
         }
         
-        let titleOption = UIAlertAction(title: SortOption.title.title, style: .default) { [weak self] _ in
+        let titleOption = UIAlertAction(title: SortOption.title.title.localized(), style: .default) { [weak self] _ in
             self?.sortMovies(by: .title)
         }
         
@@ -375,7 +375,7 @@ extension PopMoviesViewController {
             ratingOption.setValue(true, forKey: "checked")
         }
         
-        let cancelAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "Dismiss".lowercased(), style: .cancel, handler: nil)
         
         actionSheet.addAction(popularityOption)
         actionSheet.addAction(ratingOption)

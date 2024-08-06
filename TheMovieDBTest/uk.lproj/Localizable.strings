@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  TheMovieDBTest
+
+  Created by admin on 06.08.2024.
+  
+*/
+
+"Movies List" = "Список фільмів";
+"Loading" = "Загрузка";
+"Please wait" = "Зачекайте";
+"By popularity (default)" = "За популярністю (за замовчуванню)";
+"By title" = "За назвою";
+"By rating" = "За рейтингом";
