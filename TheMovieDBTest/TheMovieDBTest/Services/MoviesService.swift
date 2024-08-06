@@ -21,19 +21,24 @@ final class MoviesService: MoviesProvidable {
     
     private let authorizationToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MzU2NDVhMzAyN2VhYzFhOTc3YmRlZTc0ZmQ4MWEzZCIsIm5iZiI6MTcyMjAxMTE3Mi41MTEzODEsInN1YiI6IjY2YTNjYmNhODQ1NjM4YmYxOTcwOGMzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma0Y2QR4Sbv9WLcZ7uDCsq0_RwL-0ifo82gI5fZAVEw"
     
-    var counter = 0
-    var searchCounter = 0
+//    var counter = 1
+//    var searchCounter = 0
     
     func fetchMovies(page: Int, sortBy: SortByQuery? = nil, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        var url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
-        if counter < 11 && counter > 0 {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
-        }
+        let url = URL(string: "https://api.themoviedb.org/3/discover/movie")!
         
-        if counter > 12 {
-            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
-        }
-        counter += 1
+        //Mock Comments for simulate errors in particular request try
+        
+//        if counter < 2 && counter > 0 {
+//            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
+//        }
+        
+//        if counter > 12 {
+//            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
+//        }
+//        counter += 1
+        
+        
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
           URLQueryItem(name: "include_adult", value: "false"),
@@ -52,6 +57,9 @@ final class MoviesService: MoviesProvidable {
         ]
         
         URLSession.shared.dataTask(with: request) { data, response, error in
+            // uncomment to simulate longer loading
+//            Thread.sleep(forTimeInterval: 3)
+            
             if let error = error {
                 print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
                 if NetworkMonitor.shared.isConnected {
@@ -76,8 +84,6 @@ final class MoviesService: MoviesProvidable {
             }
             
             do {
-//                let json = try? JSONSerialization.jsonObject(with: data)
-//                print(json)
                 let results = try JSONDecoder().decode(Response<MovieModel>.self, from: data)
                 complition(.success(results.results))
             } catch {
@@ -143,11 +149,18 @@ final class MoviesService: MoviesProvidable {
     }
     
     func searchMovieByTitle(_ title: String, page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
-        var url = URL(string: "https://api.themoviedb.org/3/search/movie")!
-        if searchCounter == 0 {
-            url = URL(string: "ttps://api.themoviedb.org/3/search/movie1212312312")!
-        }
-        searchCounter += 1
+        
+        let url = URL(string: "https://api.themoviedb.org/3/search/movie")!
+        //Mock Comments for simulate errors in particular request try
+        
+//        if searchCounter == 0 {
+//            url = URL(string: "ttps://api.themoviedb.org/3/search/movie1212312312")!
+//        }
+//        if searchCounter == 3 {
+//            url = URL(string: "ttps://api.themoviedb.org/3/search/movie1212312312")!
+//        }
+//        searchCounter += 1
+        
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "query", value: "\(title)"),
@@ -166,8 +179,10 @@ final class MoviesService: MoviesProvidable {
         ]
         
         URLSession.shared.dataTask(with: request) { data, responce, error in
+            //uncomment to simulate longer loading
+//            Thread.sleep(forTimeInterval: 3)
+            
             if let error = error {
-                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
                 if NetworkMonitor.shared.isConnected {
                     complition(.failure(.error("Error in searching movie, error: \(error.localizedDescription)")))
                 } else {

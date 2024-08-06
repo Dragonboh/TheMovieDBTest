@@ -18,12 +18,9 @@ enum MovieListState {
     case moreDataLoadingFinished
     case moreDataLoadingFailed(CustomError)
     
-    
+    case offlineSearch(CustomError)
     case reloadData
-    case error(CustomError)
 }
-
-
 
 protocol MovieListScreenProtocol: AnyObject {
     func updateState(state: MovieListState)
@@ -63,6 +60,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     private var isFetchingMoreData = false
     private var isSearching = false
     private var isSearchingMode = false
+    private var isSearchingOffline = false
     
     // Same here we could use PopMoviesListViewModelProtocol
     init?(coder: NSCoder, viewModel: PopMoviesListViewModel) {
@@ -105,7 +103,6 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     }
     
     private func setUpSearchController() {
-//        searchController.searchResultsUpdater = self
         searchController.delegate = self
         searchController.searchBar.delegate = self
     }
@@ -114,7 +111,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
         tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = tableRefreshControl
-        tableView.backgroundView = .contentEmptyView
+        tableView.backgroundView = .none
 
         let footerErrorView = TableFooterErrorView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
         tableFooterErrorView = footerErrorView
@@ -123,13 +120,12 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
         tableFooterLoadingView = footerLoadingView
         
         footerErrorView.retryButton.addTarget(self, action: #selector(retryButtonTapped), for:  .touchUpInside)
-        tableView.tableFooterView = tableFooterLoadingView
     }
     
     private func setUpNavigationBar() {
         title = "Popular Movies"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-//        navigationItem.searchController = searchController
+        navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
@@ -138,55 +134,39 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     func updateState(state: MovieListState) {
         switch state {
         case .initialDataLoadingStart:
+            print("DEBUG: initialDataLoadingStart")
             if !isPullToRefreshRunning {
                 progressHUD.show(in: view)
             }
             
         case .initialDataLoadingFinished:
+            print("DEBUG: initialDataLoadingFinished")
             initialDataLoadingFinished()
             
         case .initialDataLoadingFailed(let error):
-            
-            if isPullToRefreshRunning {
-                finishPullToRefreshAnimationIfNeeded()
-                isPullToRefreshRunning = false
-                tableView.configure(backgroundView: self.diffableDataSource.numberOfItems == 0 ? .failedToLoad : .none)
-            }
-            
-            showAlertError(message: error.errorMessage)
+            initialDataLoadingFailed(error)
             
         case .moreDataLoadingStart:
             print("DEBUG: More data loading start")
 
         case .moreDataLoadingFinished:
-            updateDiffableDataSource()
-            
-            if tableViewDragToEnd {
-                tableView.tableFooterView = tableFooterLoadingView
-                tableViewDragToEnd = false
-            }
+            moreDataLoadingFinished()
             
         case .moreDataLoadingFailed(let error):
-            isFetchingMoreData = false
-            if (lastShowedCellIndex == (diffableDataSource.numberOfItems - 1)) && !tableViewDragToEnd {
-                showAlertError(message: error.errorMessage)
-                tableView.tableFooterView = tableFooterErrorView
-                tableViewDragToEnd = true
-            } else if tableViewDragToEnd {
-                showAlertError(message: error.errorMessage)
-            }
+            moreDataLoadingFailed(error)
 
-        case .error(let error):
-            handleError(errorMessage: error.errorMessage)
+        case .offlineSearch(let error):
+            offlineSearch(error)
            
         case .reloadData:
+            print("DEBUG: reloadData")
             updateDiffableDataSource()
        
         }
     }
     // MARK: - Main Flow
     
-    private func updateDiffableDataSource(initialLoad: Bool = false) {
+    private func updateDiffableDataSource(initialLoad: Bool = false, background: UITableView.TableViewBackground = .empty) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, MovieModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(moviesListVM.filteredMovies)
@@ -197,7 +177,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
                 isFetchingMoreData = false
             }
             
-            tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? .empty : .none)
+            tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? background : .none)
         }
     }
     
@@ -221,37 +201,78 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     private func initialDataLoadingFinished() {
         
         if isPullToRefreshRunning {
+            isPullToRefreshRunning = false
             finishPullToRefreshAnimationIfNeeded()
         } else {
             progressHUD.dismiss()
         }
+        if moviesListVM.filteredMovies.count == 0 {
+            tableView.tableFooterView = nil
+        } else {
+            tableView.tableFooterView = tableFooterLoadingView
+        }
+        
         
         updateDiffableDataSource(initialLoad: true)
+        
+        if isSearchingOffline {
+            tableView.tableHeaderView = nil
+            isSearchingOffline = false
+        }
     }
     
-    private func handleError(errorMessage: String) {
-//        if isPullToRefreshRunning {
-//            finishPullToRefreshAnimationIfNeeded()
-//        }
-//        
-//        if tableViewDragToEnd {
-//            stopInfinitiveScroll()
-//            showAlertError(message: errorMessage)
-//            isFetchingMoreData = false
-//            return
-//        }
-//        
-//        if isFetchingMoreData {
-//            isFetchingMoreData = false
-//            return
-//        }
-//        
-//        updateDiffableDataSource()
-//        showAlertError(message: errorMessage)
-//        progressHUD.dismiss()
-//        tableView.isHidden = false
-//        tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? .failedToLoad : .none)
-//        tableView.isHidden = false
+    private func moreDataLoadingFinished() {
+        print("DEBUG: moreDataLoadingFinished")
+        updateDiffableDataSource()
+        
+        if tableViewDragToEnd {
+            tableView.tableFooterView = tableFooterLoadingView
+            tableViewDragToEnd = false
+        }
+    }
+    
+    private func moreDataLoadingFailed(_ error: CustomError) {
+        print("DEBUG: moreDataLoadingFailed")
+        isFetchingMoreData = false
+        if (lastShowedCellIndex == (diffableDataSource.numberOfItems - 1)) && !tableViewDragToEnd {
+            showAlertError(message: error.errorMessage)
+            tableView.tableFooterView = tableFooterErrorView
+            
+        } else if tableViewDragToEnd {
+            showAlertError(message: error.errorMessage)
+        }
+    }
+    
+    private func initialDataLoadingFailed(_ error: CustomError) {
+        print("DEBUG: initialDataLoadingFailed")
+        if isPullToRefreshRunning {
+            finishPullToRefreshAnimationIfNeeded()
+            isPullToRefreshRunning = false
+        }
+        
+        if isSearchingOffline {
+            tableView.tableHeaderView = nil
+            isSearchingOffline = false
+        }
+        
+        progressHUD.dismiss()
+        if isSearchingMode {
+            tableView.isHidden = false
+            updateDiffableDataSource(background: .failedToLoad)
+        }
+        tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? .failedToLoad : .none)
+        tableView.tableFooterView = nil
+        showAlertError(message: error.errorMessage)
+    }
+    
+    private func offlineSearch(_ error: CustomError) {
+        print("DEBUG: Offline search")
+        isSearchingOffline = true
+        tableView.tableFooterView = nil
+        tableView.tableHeaderView = TableOfflineHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
+        progressHUD.dismiss()
+        updateDiffableDataSource()
+        showAlertError(message: error.errorMessage)
     }
     
     private func finishPullToRefreshAnimationIfNeeded() {
@@ -289,9 +310,13 @@ extension PopMoviesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         print("Will DIsplay: ", indexPath.row)
-        if (indexPath.row > (diffableDataSource.numberOfItems - 10)) && !isFetchingMoreData && !tableViewDragToEnd {
+        if (indexPath.row > (diffableDataSource.numberOfItems - 10)) && !isFetchingMoreData && !tableViewDragToEnd && !isSearchingOffline {
             isFetchingMoreData = true
             moviesListVM.fetchMoreData()
+        }
+        
+        if indexPath.row == diffableDataSource.numberOfItems {
+            tableViewDragToEnd = true
         }
         
         if indexPath.row > lastShowedCellIndex {
@@ -305,8 +330,6 @@ extension PopMoviesViewController: UITableViewDelegate {
 extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelegate {
     
     func willPresentSearchController(_ searchController: UISearchController) {
-        tableView.isHidden = true
-//        isSearching = true
         isSearchingMode = true
     }
 
@@ -319,6 +342,7 @@ extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelega
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         print("DEBUG: searchBarCancelButtonClicked")
         isSearchingMode = false
+        tableView.isHidden = false
         moviesListVM.searchBarCancelButtonClicked()
     }
 }

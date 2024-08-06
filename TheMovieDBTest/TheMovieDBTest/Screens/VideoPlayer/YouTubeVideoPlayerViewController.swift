@@ -18,7 +18,7 @@ class YouTubeVideoPlayerViewController: UIViewController {
         return hud
     }()
     
-    var videoId: String
+    private var videoId: String
     
     init?(coder: NSCoder, videoId: String) {
         self.videoId = videoId

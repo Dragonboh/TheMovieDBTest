@@ -16,7 +16,6 @@ class TableFooterLoadingView: UIView {
         activityIndicator.startAnimating()
 
         self.addSubview(activityIndicator)
-        self.backgroundColor = .red
         
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -34,7 +33,6 @@ class TableFooterErrorView: UIView {
     private let errorMessageLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.text = "Error occurred loading next page, tap button to retry"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -52,20 +50,24 @@ class TableFooterErrorView: UIView {
         return button
     }()
     
-    override init(frame: CGRect) {
+    private var errorMessage: String?
+    
+    init(frame: CGRect, errorMesasge: String? = nil) {
+        self.errorMessage = errorMesasge
         super.init(frame: frame)
         setupView()
+        
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupView()
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupView() {
         backgroundColor = .gray
         addSubview(errorMessageLabel)
         addSubview(retryButton)
+        errorMessageLabel.text = errorMessage ?? "Error occurred loading next page, tap button to retry"
         NSLayoutConstraint.activate([
             errorMessageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             errorMessageLabel.centerYAnchor.constraint(equalTo: centerYAnchor),

@@ -74,7 +74,7 @@ private extension Coordinator {
     
     private func createTrailerViewController(videoId: String) -> YouTubeVideoPlayerViewController {
         let trailerVC = storyboard.instantiateViewController(identifier: String(describing: YouTubeVideoPlayerViewController.self)) { coder in
-            YouTubeVideoPlayerViewController(coder: coder, videoId: "")
+            YouTubeVideoPlayerViewController(coder: coder, videoId: videoId)
         }
          
         return trailerVC

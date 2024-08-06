@@ -19,6 +19,7 @@
 		8404C6472C60DEF500F71099 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8404C6462C60DEF500F71099 /* Kingfisher */; };
 		8404C64E2C6160BB00F71099 /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C64D2C6160BB00F71099 /* TableFooterView.swift */; };
 		8404C6502C6197E000F71099 /* PosterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C64F2C6197E000F71099 /* PosterViewController.swift */; };
+		8404C6522C61BA8600F71099 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6512C61BA8600F71099 /* TableHeaderView.swift */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
 		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
@@ -52,6 +53,7 @@
 		8404C63D2C5FE1C100F71099 /* PopMovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopMovieCell.swift; sourceTree = "<group>"; };
 		8404C64D2C6160BB00F71099 /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
 		8404C64F2C6197E000F71099 /* PosterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
+		8404C6512C61BA8600F71099 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviewDetails.swift; sourceTree = "<group>"; };
 		843C61DE2C5A78D10062C8FB /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				8404C6332C5E878300F71099 /* ContentUnavailableView */,
 				8404C6312C5E876900F71099 /* MoviesListPlaceholders.swift */,
 				8404C64D2C6160BB00F71099 /* TableFooterView.swift */,
+				8404C6512C61BA8600F71099 /* TableHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8404C6522C61BA8600F71099 /* TableHeaderView.swift in Sources */,
 				8404C63E2C5FE1C100F71099 /* PopMovieCell.swift in Sources */,
 				8404C62D2C5C23CB00F71099 /* YouTubeVideoPlayerViewController.swift in Sources */,
 				8479FCB42C56A7FD00E36F3F /* MovieModel.swift in Sources */,

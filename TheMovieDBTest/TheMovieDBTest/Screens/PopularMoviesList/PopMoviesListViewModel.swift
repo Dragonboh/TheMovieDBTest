@@ -26,6 +26,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     private var isSearchingMode = false
     private var searchQuery = ""
     private var initialLoading = true
+    private var initialSearching = true
     
     weak var screen: MovieListScreenProtocol?
     
@@ -48,10 +49,12 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     
     func fetchMoreData() {
         screen?.updateState(state: .moreDataLoadingStart)
-        initialLoading = false
+        
         if isSearchingMode {
+            initialSearching = false
             searchData()
         } else {
+            initialLoading = false
             fetchData()
         }
     }
@@ -59,7 +62,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     func searchMovie(title: String) {
         screen?.updateState(state: .initialDataLoadingStart)
         isSearchingMode = true
-        initialLoading = true
+        initialSearching = true
         searchQuery = title
         searchTotalPages = 0
         filteredMovies = []
@@ -79,31 +82,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
         screen?.updateState(state: .reloadData)
     }
     
-//    func pullToRefresh()
-    
-//    func updateSearchResults() {
-//        filteredMovies = []
-//        screen?.updateState(state: .reloadData)
-//    }
-    
     // MARK: - Private functions
-    
-//    private func fetchInitialData() {
-//        screen?.updateState(state: .initialDataLoadingStart)
-//        initialLoading = true
-//        initialTotalPages = 0
-//        fetchData()
-//    }
-//    
-//    private func fetchSearchInitialData() {
-//        screen?.updateState(state: .initialDataLoadingStart)
-//        isSearchingMode = true
-//        initialLoading = true
-//        searchQuery = title
-//        searchTotalPages = 0
-//        filteredMovies = []
-//        searchData()
-//    }
     
     private func fetchData() {
         let page = getPage() + 1
@@ -126,7 +105,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     }
     
     private func searchData() {
-        let page = searchTotalPages + 1
+        let page = getSearchPage() + 1
         moviesService.searchMovieByTitle(searchQuery, page: page) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -134,22 +113,13 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
                 case .success(let moviesArray):
                     self.searchTotalPages = page
                     self.filteredMovies.append(contentsOf: moviesArray)
-                    if self.initialLoading {
+                    if self.initialSearching {
                         self.screen?.updateState(state: .initialDataLoadingFinished)
                     } else {
                         self.screen?.updateState(state: .moreDataLoadingFinished)
                     }
                 case .failure(let error):
-                    print("DEBUG: error in searching data for title \(self.searchQuery), error: \(error.errorMessage)")
-                    self.filterMovie(title: self.searchQuery)
-                    switch error {
-                    case .error(_):
-                        self.screen?.updateState(state: .error(error))
-                    case .noInternetConnection:
-                        self.screen?.updateState(state: .reloadData)
-                        self.screen?.updateState(state: .initialDataLoadingFinished)
-                        self.screen?.updateState(state: .error(error))
-                    }
+                    self.handleSearchingError(error)
                 }
             }
         }
@@ -166,6 +136,34 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
             return 0
         } else {
             return initialTotalPages
+        }
+    }
+    
+    private func getSearchPage() -> Int {
+        if initialSearching {
+            return 0
+        } else {
+            return searchTotalPages
+        }
+    }
+    
+    private func handleSearchingError(_ error: CustomError) {
+        print("DEBUG: error in searching data for title \(self.searchQuery), error: \(error.errorMessage)")
+        switch error {
+        case .error(_):
+            if initialSearching {
+                screen?.updateState(state: .initialDataLoadingFailed(error))
+            } else {
+                screen?.updateState(state: .moreDataLoadingFailed(error))
+            }
+        case .noInternetConnection:
+            print("DEBUG: noInternetConnection")
+            if initialSearching {
+                filterMovie(title: self.searchQuery)
+                screen?.updateState(state: .offlineSearch(error))
+            } else {
+                screen?.updateState(state: .moreDataLoadingFailed(error))
+            }
         }
     }
     
