@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class PosterViewController: UIViewController, UIScrollViewDelegate {
+class PosterViewController: UIViewController {
     
     private var scrollView: UIScrollView!
     private var imageView: UIImageView!
@@ -24,14 +24,14 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
     //  if allowFullImage is true, image can be "pinched in" to see the full image
     private var allowFullImage: Bool = true
     private let imagePath: String
-    
+        
     init(imagePath: String) {
         self.imagePath = imagePath
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("use init?(coder: NSCoder, viewModel: MoviesListViewModel) instead")
+        fatalError("use init(imagePath: String) instead")
     }
     
     override func viewDidLoad() {
@@ -45,18 +45,33 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
             sheet.prefersGrabberVisible = true
         }
         
+        setUpViews()
+        
+        imageView.kf.setImage(with: url)
+    }
+    
+    private func setUpViews() {
         scrollView = UIScrollView()
         imageView = UIImageView()
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
         
         scrollView.addSubview(imageView)
         view.addSubview(scrollView)
         view.backgroundColor = .systemBackground
         scrollView.backgroundColor = .gray
+        
+        configureConstraints()
+       
+        scrollView.delegate = self
+        scrollView.minimumZoomScale = 0.1
+        scrollView.maximumZoomScale = 5.0
+    }
+    
+    private func configureConstraints() {
         // respect safe area
         let g = view.safeAreaLayoutGuide
         
@@ -78,20 +93,12 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
             imageViewTrailingConstraint,
             
         ])
-        
-        scrollView.delegate = self
-        scrollView.minimumZoomScale = 0.1
-        scrollView.maximumZoomScale = 5.0
-        
-        imageView.kf.setImage(with: url)
-        
     }
 
     @objc
     private func closeSheet() {
         dismiss(animated: true)
     }
-    
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -104,18 +111,16 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
         })
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidLayoutSubviews() {
         updateMinZoomScaleForSize(scrollView.bounds.size)
         updateConstraintsForSize(scrollView.bounds.size)
         
         if fitMode == .scaleAspectFill {
             centerImageView()
         }
-        
     }
     
-    func updateMinZoomScaleForSize(_ size: CGSize, shouldSize: Bool = true) {
+    private func updateMinZoomScaleForSize(_ size: CGSize, shouldSize: Bool = true) {
         guard let img = imageView.image else {
             return
         }
@@ -131,26 +136,24 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
         if fitMode == .scaleAspectFill && !allowFullImage {
             minScale = startScale
         }
+        
         if scrollView.zoomScale < minScale {
             bShouldSize = true
         }
+        
         scrollView.minimumZoomScale = minScale
         if bShouldSize {
             scrollView.zoomScale = fitMode == .scaleAspectFill ? startScale : minScale
         }
     }
-    
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        updateConstraintsForSize(scrollView.bounds.size)
-    }
-    
-    func centerImageView() -> Void {
+
+    private func centerImageView() -> Void {
         let yOffset = (scrollView.frame.size.height - imageView.frame.size.height) / 2
         let xOffset = (scrollView.frame.size.width - imageView.frame.size.width) / 2
         scrollView.contentOffset = CGPoint(x: -xOffset, y: -yOffset)
     }
     
-    func updateConstraintsForSize(_ size: CGSize) {
+    private func updateConstraintsForSize(_ size: CGSize) {
         let yOffset = max(0, (size.height - imageView.frame.height) / 2)
         imageViewTopConstraint.constant = yOffset
         imageViewBottomConstraint.constant = yOffset
@@ -161,9 +164,14 @@ class PosterViewController: UIViewController, UIScrollViewDelegate {
         
         view.layoutIfNeeded()
     }
+}
+
+extension PosterViewController: UIScrollViewDelegate {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        updateConstraintsForSize(scrollView.bounds.size)
+    }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
-    
 }

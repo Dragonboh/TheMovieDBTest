@@ -22,6 +22,7 @@
 		8404C6522C61BA8600F71099 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C6512C61BA8600F71099 /* TableHeaderView.swift */; };
 		8404C6592C61CAF900F71099 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8404C6572C61CAF900F71099 /* Localizable.strings */; };
 		8404C65C2C61CD4200F71099 /* Strinng + Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8404C65B2C61CD4200F71099 /* Strinng + Extentions.swift */; };
+		8404C65F2C629A6900F71099 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 8404C65E2C629A6900F71099 /* OrderedCollections */; };
 		843C61DD2C5A73AB0062C8FB /* MoviewDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DC2C5A73AB0062C8FB /* MoviewDetails.swift */; };
 		843C61DF2C5A78D20062C8FB /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843C61DE2C5A78D10062C8FB /* CustomError.swift */; };
 		843F81AE2C5A3E05009BAF89 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F81AD2C5A3E05009BAF89 /* MovieDetailsViewController.swift */; };
@@ -88,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8404C65F2C629A6900F71099 /* OrderedCollections in Frameworks */,
 				8404C6472C60DEF500F71099 /* Kingfisher in Frameworks */,
 				843F81BA2C5A520C009BAF89 /* JGProgressHUD in Frameworks */,
 				8479FCBF2C57DEE800E36F3F /* UIScrollView_InfiniteScroll in Frameworks */,
@@ -294,6 +296,7 @@
 				843F81B92C5A520C009BAF89 /* JGProgressHUD */,
 				8404C6292C5C233400F71099 /* YouTubeiOSPlayerHelper */,
 				8404C6462C60DEF500F71099 /* Kingfisher */,
+				8404C65E2C629A6900F71099 /* OrderedCollections */,
 			);
 			productName = TheMovieDBTest;
 			productReference = 8479FC9C2C56A3AE00E36F3F /* TheMovieDBTest.app */;
@@ -329,6 +332,7 @@
 				843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 				8404C6282C5C233400F71099 /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */,
 				8404C6452C60DEF500F71099 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				8404C65D2C629A6900F71099 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = 8479FC9D2C56A3AE00E36F3F /* Products */;
 			projectDirPath = "";
@@ -648,6 +652,14 @@
 				minimumVersion = 7.12.0;
 			};
 		};
+		8404C65D2C629A6900F71099 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.2;
+			};
+		};
 		843F81B82C5A520C009BAF89 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
@@ -676,6 +688,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8404C6452C60DEF500F71099 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		8404C65E2C629A6900F71099 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8404C65D2C629A6900F71099 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 		843F81B92C5A520C009BAF89 /* JGProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;

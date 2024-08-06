@@ -169,7 +169,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     private func updateDiffableDataSource(initialLoad: Bool = false, background: UITableView.TableViewBackground = .empty) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, MovieModel>()
         snapshot.appendSections([0])
-        snapshot.appendItems(moviesListVM.filteredMovies)
+        snapshot.appendItems(moviesListVM.filteredMovies.elements)
         
         diffableDataSource.apply(snapshot, animatingDifferences: !initialLoad) { [weak self] in
             guard let self = self else { return }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OrderedCollections
 
 protocol PopMoviesListViewModelProtocol {
     func fetchInitialData()
@@ -22,7 +23,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     
     private var initialTotalPages = 0
     private var searchTotalPages = 0
-    private var initialMovies: [MovieModel] = []
+    private var initialMovies: OrderedSet<MovieModel> = []
     private var isSearchingMode = false
     private var searchQuery = ""
     private var initialLoading = true
@@ -32,7 +33,7 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     
     var goToMovieDetailsScreen: ((Int) -> Void)?
     var currentSortOption: SortOption = .popularity
-    var filteredMovies: [MovieModel] = []
+    var filteredMovies: OrderedSet<MovieModel> = []
     
     init(moviesService: MoviesProvidable, router: Coordinator) {
         self.moviesService = moviesService
@@ -169,8 +170,8 @@ class PopMoviesListViewModel: PopMoviesListViewModelProtocol {
     
     private func initialDataLoadSuccess(_ movies: [MovieModel]) {
         if initialLoading {
-            initialMovies = movies
-            filteredMovies = movies
+            initialMovies.elements = movies
+            filteredMovies.elements = movies
             screen?.updateState(state: .initialDataLoadingFinished)
         } else {
             initialMovies.append(contentsOf: movies)
