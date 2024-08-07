@@ -8,7 +8,7 @@
 import Foundation
 
 struct Response<RR: Codable>: Codable {
-    let results: [RR]
+    let results: RR
 }
 
 struct MovieModel: Codable, Hashable, Identifiable {

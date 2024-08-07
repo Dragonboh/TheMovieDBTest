@@ -38,7 +38,7 @@ class Coordinator {
 
 private extension Coordinator {
     private func createPopMoviesListViewController() -> PopMoviesViewController {
-        let viewModel = PopMoviesListViewModel(moviesService: MoviesService(), router: self)
+        let viewModel = PopMoviesListPresenter(moviesService: MoviesService(), router: self)
         viewModel.goToMovieDetailsScreen = {[weak self] movieId in
             self?.goToMovieDetailsScreen(movieId: movieId)
         }
@@ -47,7 +47,7 @@ private extension Coordinator {
             PopMoviesViewController(coder: coder, viewModel: viewModel)
         }
             
-        viewModel.screen = popularMoviesVC
+        viewModel.view = popularMoviesVC
         
         return popularMoviesVC
     }

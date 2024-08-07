@@ -56,45 +56,12 @@ final class MoviesService: MoviesProvidable {
           "Authorization": authorizationToken
         ]
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            // uncomment to simulate longer loading
-//            Thread.sleep(forTimeInterval: 3)
-            
-            if let error = error {
-                print("DEBUG: error in getting popular movies, error: \(error.localizedDescription)")
-                if NetworkMonitor.shared.isConnected {
-                    complition(.failure(.error("Error in getting popular movies, error: \(error.localizedDescription)")))
-                } else {
-                    complition(.failure(.noInternetConnection))
-                }
-                
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                print("DEBUG: bad response")
-                complition(.failure(.error("bad response")))
-                return
-            }
-            
-            guard let data = data else {
-                print("DEBUG: no data")
-                complition(.failure(.error("no response data")))
-                return
-            }
-            
-            do {
-                let results = try JSONDecoder().decode(Response<MovieModel>.self, from: data)
-                complition(.success(results.results))
-            } catch {
-                print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
-                complition(.failure(.error("cannot decode JSON, error: \(error.localizedDescription)")))
-            }
-        }.resume()
+        performMultiResponseRequest(request, complition: complition)
     }
     
     func fetchMovieDetailsAppendVideos(movieId: Int, complition: @escaping (Result<MovieDetails, CustomError>) -> Void) {
         let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieId)")!
+        
 //        if searchCounter > 2 {
 //            url = URL(string: "https://api.themoviedb.org/3/discover/movie1212312312")!
 //        }
@@ -108,44 +75,13 @@ final class MoviesService: MoviesProvidable {
         components.queryItems = components.queryItems.map { $0 + queryItems } ?? queryItems
 
         var request = URLRequest(url: components.url!)
-        request.httpMethod = "GET"
         request.timeoutInterval = 10
         request.allHTTPHeaderFields = [
           "accept": "application/json",
           "Authorization": authorizationToken
         ]
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                if NetworkMonitor.shared.isConnected {
-                    complition(.failure(.error("Error in getting popular movies, error: \(error.localizedDescription)")))
-                } else {
-                    complition(.failure(.noInternetConnection))
-                }
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                print("DEBUG: bad response")
-                complition(.failure(.error("bad response")))
-                return
-            }
-            
-            guard let data = data else {
-                print("DEBUG: no data")
-                complition(.failure(.error("no response data")))
-                return
-            }
-            
-            do {
-                let results = try JSONDecoder().decode(MovieDetails.self, from: data)
-                
-                complition(.success(results))
-            } catch {
-                print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
-                complition(.failure(.error(error.localizedDescription)))
-            }
-        }.resume()
+        
+        performSingleResponseRequest(request, complition: complition)
     }
     
     func searchMovieByTitle(_ title: String, page: Int, complition: @escaping (Result<[MovieModel], CustomError>) -> Void) {
@@ -178,40 +114,68 @@ final class MoviesService: MoviesProvidable {
             "Authorization": authorizationToken
         ]
         
-        URLSession.shared.dataTask(with: request) { data, responce, error in
-            //uncomment to simulate longer loading
-//            Thread.sleep(forTimeInterval: 3)
-            
-            if let error = error {
-                if NetworkMonitor.shared.isConnected {
-                    complition(.failure(.error("Error in searching movie, error: \(error.localizedDescription)")))
-                } else {
-                    complition(.failure(.noInternetConnection))
+        performMultiResponseRequest(request, complition: complition)
+    }
+}
+
+extension MoviesService {
+    func performSingleResponseRequest<DecodedType: Codable>(_ request: URLRequest, complition: @escaping (Result<DecodedType, CustomError>) -> Void) {
+        URLSession.shared.dataTask(with: request) {[weak self] data, response, error in
+            guard let self = self else { return }
+            switch checkResultsForErrors(data, response, error) {
+            case .failure(let error):
+                complition(.failure(error))
+            case .success(let data):
+                do {
+                    let results = try JSONDecoder().decode(DecodedType.self, from: data)
+                    complition(.success(results))
+                } catch {
+                    print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
+                    complition(.failure(.error(error.localizedDescription)))
                 }
-                
-                return
-            }
-            
-            guard let _ = responce as? HTTPURLResponse else {
-                print("DEBUG: bad response")
-                complition(.failure(.error("bad response")))
-                return
-            }
-            
-            guard let data = data else {
-                print("DEBUG: no data")
-                complition(.failure(.error("no response data")))
-                return
-            }
-            
-            do {
-                let results = try JSONDecoder().decode(Response<MovieModel>.self, from: data)
-                complition(.success(results.results))
-            } catch {
-                print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
-                complition(.failure(.error("cannot decode JSON, error: \(error.localizedDescription)")))
             }
         }.resume()
+    }
+    
+    func performMultiResponseRequest<DecodedType: Codable>(_ request: URLRequest, complition: @escaping (Result<[DecodedType], CustomError>) -> Void) {
+        URLSession.shared.dataTask(with: request) {[weak self] data, response, error in
+            guard let self = self else { return }
+            switch checkResultsForErrors(data, response, error) {
+            case .failure(let error):
+                complition(.failure(error))
+            case .success(let data):
+                do {
+                    let results = try JSONDecoder().decode(Response<[DecodedType]>.self, from: data)
+                    complition(.success(results.results))
+                } catch {
+                    print("DEBUG: cannot decode JSON, error: \(error.localizedDescription)")
+                    complition(.failure(.error(error.localizedDescription)))
+                }
+            }
+            
+        }.resume()
+    }
+    
+    func checkResultsForErrors(_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Result<Data, CustomError> {
+        if let error = error {
+            if NetworkMonitor.shared.isConnected {
+                return .failure(.error("Error in getting popular movies, error: \(error.localizedDescription)"))
+            } else {
+                return .failure(.noInternetConnection)
+            }
+        }
+        
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            print("DEBUG: bad response")
+            return .failure(.error("bad response"))
+        }
+        
+        guard let data = data else {
+            print("DEBUG: no data")
+            return .failure(.error("no response data"))
+        }
+        
+        return .success(data)
     }
 }
 

@@ -9,7 +9,7 @@ import UIKit
 import JGProgressHUD
 import SwiftUI
 
-enum MovieListState {
+enum MovieListViewState {
     case initialDataLoadingStart
     case initialDataLoadingFinished
     case initialDataLoadingFailed(CustomError)
@@ -22,11 +22,11 @@ enum MovieListState {
     case reloadData
 }
 
-protocol MovieListScreenProtocol: AnyObject {
-    func updateState(state: MovieListState)
+protocol MovieListViewProtocol: AnyObject {
+    func updateState(state: MovieListViewState)
 }
 
-class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
+class PopMoviesViewController: UIViewController, MovieListViewProtocol {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -50,21 +50,15 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     }()
     
     // OR we need PopMoviesListViewModelProtocol
-    var moviesListVM: PopMoviesListViewModel
+    private var presenter: PopMoviesListPresenter
     
-    private var lastScrollOffset = 0.0
     private var lastShowedCellIndex = 0
-    
     private var isPullToRefreshRunning = false
     private var tableViewDragToEnd = false
-    private var isFetchingMoreData = false
-    private var isSearching = false
-    private var isSearchingMode = false
-    private var isSearchingOffline = false
     
     // Same here we could use PopMoviesListViewModelProtocol
-    init?(coder: NSCoder, viewModel: PopMoviesListViewModel) {
-        self.moviesListVM = viewModel
+    init?(coder: NSCoder, viewModel: PopMoviesListPresenter) {
+        self.presenter = viewModel
         super.init(coder: coder)
     }
     
@@ -131,7 +125,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     
     // MARK: - Update State
     
-    func updateState(state: MovieListState) {
+    func updateState(state: MovieListViewState) {
         switch state {
         case .initialDataLoadingStart:
             print("DEBUG: initialDataLoadingStart")
@@ -169,12 +163,12 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     private func updateDiffableDataSource(initialLoad: Bool = false, background: UITableView.TableViewBackground = .empty) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, MovieModel>()
         snapshot.appendSections([0])
-        snapshot.appendItems(moviesListVM.filteredMovies.elements)
+        snapshot.appendItems(presenter.filteredMovies.elements)
         
         diffableDataSource.apply(snapshot, animatingDifferences: !initialLoad) { [weak self] in
             guard let self = self else { return }
             if !initialLoad {
-                isFetchingMoreData = false
+                presenter.isFetchingMoreData = false
             }
             
             tableView.configure(backgroundView: diffableDataSource.numberOfItems == 0 ? background : .none)
@@ -183,7 +177,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     
     private func fetchInitialData() {
         print("DEBUG: Fetch initial data")
-        moviesListVM.fetchInitialData()
+        presenter.fetchInitialData()
     }
     
     @objc
@@ -191,8 +185,8 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
         print("DEBUG: pullToRefresh")
         isPullToRefreshRunning = true
         
-        if isSearchingMode {
-            moviesListVM.searchMovie(title: searchController.searchBar.text ?? "")
+        if presenter.isSearchingMode {
+            presenter.searchMovie(title: searchController.searchBar.text ?? "")
         } else {
             fetchInitialData()
         }
@@ -206,18 +200,17 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
         } else {
             progressHUD.dismiss()
         }
-        if moviesListVM.filteredMovies.count == 0 {
+        if presenter.filteredMovies.count == 0 {
             tableView.tableFooterView = nil
         } else {
             tableView.tableFooterView = tableFooterLoadingView
         }
         
-        
         updateDiffableDataSource(initialLoad: true)
         
-        if isSearchingOffline {
+        if presenter.isSearchingOffline {
             tableView.tableHeaderView = nil
-            isSearchingOffline = false
+            presenter.isSearchingOffline = false
         }
     }
     
@@ -233,7 +226,6 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     
     private func moreDataLoadingFailed(_ error: CustomError) {
         print("DEBUG: moreDataLoadingFailed")
-        isFetchingMoreData = false
         if (lastShowedCellIndex == (diffableDataSource.numberOfItems - 1)) && !tableViewDragToEnd {
             showAlertError(message: error.errorMessage)
             tableView.tableFooterView = tableFooterErrorView
@@ -250,13 +242,13 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
             isPullToRefreshRunning = false
         }
         
-        if isSearchingOffline {
+        if presenter.isSearchingOffline {
             tableView.tableHeaderView = nil
-            isSearchingOffline = false
+            presenter.isSearchingOffline = false
         }
         
         progressHUD.dismiss()
-        if isSearchingMode {
+        if presenter.isSearchingMode {
             tableView.isHidden = false
             updateDiffableDataSource(background: .failedToLoad)
         }
@@ -267,7 +259,6 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     
     private func offlineSearch(_ error: CustomError) {
         print("DEBUG: Offline search")
-        isSearchingOffline = true
         tableView.tableFooterView = nil
         tableView.tableHeaderView = TableOfflineHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
         progressHUD.dismiss()
@@ -282,7 +273,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
 
     private func sortMovies(by sortOption: SortOption) {
         print("DEBUG: new sort option: \(sortOption.title)")
-        moviesListVM.currentSortOption = sortOption
+        presenter.currentSortOption = sortOption
         fetchInitialData()
     }
     
@@ -294,8 +285,7 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
     
     @objc
     private func retryButtonTapped() {
-        isFetchingMoreData = true
-        moviesListVM.fetchMoreData()
+        presenter.fetchMoreData()
     }
 }
 
@@ -304,15 +294,14 @@ class PopMoviesViewController: UIViewController, MovieListScreenProtocol {
 extension PopMoviesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        moviesListVM.didSelectRowAt(indexPath)
+        presenter.didSelectMovieAt(indexPath)
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         print("Will DIsplay: ", indexPath.row)
-        if (indexPath.row > (diffableDataSource.numberOfItems - 10)) && !isFetchingMoreData && !tableViewDragToEnd && !isSearchingOffline {
-            isFetchingMoreData = true
-            moviesListVM.fetchMoreData()
+        if (indexPath.row > (diffableDataSource.numberOfItems - 10)) && !presenter.isFetchingMoreData && !tableViewDragToEnd && !presenter.isSearchingOffline {
+            presenter.fetchMoreData()
         }
         
         if indexPath.row == diffableDataSource.numberOfItems {
@@ -330,20 +319,19 @@ extension PopMoviesViewController: UITableViewDelegate {
 extension PopMoviesViewController: UISearchControllerDelegate, UISearchBarDelegate {
     
     func willPresentSearchController(_ searchController: UISearchController) {
-        isSearchingMode = true
+        presenter.willPresentSearch()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchController.searchBar.text else { return }
         print("DEBUG: searchBarSearchButtonClicked with text: \(text)")
-        moviesListVM.searchMovie(title: text)
+        presenter.searchMovie(title: text)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         print("DEBUG: searchBarCancelButtonClicked")
-        isSearchingMode = false
         tableView.isHidden = false
-        moviesListVM.searchBarCancelButtonClicked()
+        presenter.searchBarCancelButtonClicked()
     }
 }
 
@@ -366,7 +354,7 @@ extension PopMoviesViewController {
             self?.sortMovies(by: .title)
         }
         
-        switch moviesListVM.currentSortOption {
+        switch presenter.currentSortOption {
         case .popularity:
             popularityOption.setValue(true, forKey: "checked")
         case .title:
